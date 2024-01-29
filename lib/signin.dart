@@ -1,4 +1,5 @@
 import 'package:credkit/Home.dart';
+import 'package:credkit/pan.dart';
 import 'package:credkit/signup.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
@@ -82,14 +83,14 @@ class _SignInState extends State<SignIn> {
                       const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    //height: 50,
                     child: TextField(
                       cursorColor: const Color.fromARGB(133, 255, 255, 255),
                       controller: _usernameController,
                       decoration: InputDecoration(
                         hintText: 'Email Address',
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 20),
+                            vertical: 10, horizontal: 20),
                         hintStyle: const TextStyle(
                           color: Color.fromARGB(129, 255, 255, 255),
                           fontSize: 16,
@@ -125,7 +126,7 @@ class _SignInState extends State<SignIn> {
                       const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    //height: 50,
                     child: TextField(
                       cursorColor: const Color.fromARGB(133, 255, 255, 255),
                       controller: _passwordController,
@@ -133,7 +134,7 @@ class _SignInState extends State<SignIn> {
                       decoration: InputDecoration(
                           hintText: 'Password',
                           contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 20),
+                              vertical: 10, horizontal: 20),
                           hintStyle: const TextStyle(
                             color: Color.fromARGB(129, 255, 255, 255),
                             fontSize: 16,

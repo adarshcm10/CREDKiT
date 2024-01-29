@@ -1,4 +1,7 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:credkit/Home.dart';
+import 'package:credkit/pan.dart';
 import 'package:credkit/signin.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
@@ -6,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
+//import cloud_firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -100,14 +105,14 @@ class _SignUpState extends State<SignUp> {
                       bottom: 10, right: 30, left: 30, top: 20),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    // height: 50,
                     child: TextField(
                       cursorColor: const Color.fromARGB(133, 255, 255, 255),
                       controller: fullNameController,
                       decoration: InputDecoration(
                         hintText: 'Full Name',
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 20),
+                            vertical: 10, horizontal: 20),
                         hintStyle: const TextStyle(
                           color: Color.fromARGB(129, 255, 255, 255),
                           fontSize: 16,
@@ -143,14 +148,14 @@ class _SignUpState extends State<SignUp> {
                       const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    // height: 50,
                     child: TextField(
                       cursorColor: const Color.fromARGB(133, 255, 255, 255),
                       controller: emailController,
                       decoration: InputDecoration(
                         hintText: 'Email address',
                         contentPadding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 20),
+                            vertical: 10, horizontal: 20),
                         hintStyle: const TextStyle(
                           color: Color.fromARGB(129, 255, 255, 255),
                           fontSize: 16,
@@ -185,7 +190,7 @@ class _SignUpState extends State<SignUp> {
                       const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    // height: 50,
                     child: TextField(
                       cursorColor: const Color.fromARGB(133, 255, 255, 255),
                       controller: passwordController,
@@ -193,7 +198,7 @@ class _SignUpState extends State<SignUp> {
                       decoration: InputDecoration(
                           hintText: 'Password',
                           contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 20),
+                              vertical: 10, horizontal: 20),
                           hintStyle: const TextStyle(
                             color: Color.fromARGB(129, 255, 255, 255),
                             fontSize: 16,
@@ -235,7 +240,7 @@ class _SignUpState extends State<SignUp> {
                       const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
-                    height: 50,
+                    //height: 50,
                     child: TextField(
                       cursorColor: const Color.fromARGB(133, 255, 255, 255),
                       controller: confirmPasswordController,
@@ -243,7 +248,7 @@ class _SignUpState extends State<SignUp> {
                       decoration: InputDecoration(
                           hintText: 'Confirm Password',
                           contentPadding: const EdgeInsets.symmetric(
-                              vertical: 0, horizontal: 20),
+                              vertical: 10, horizontal: 20),
                           hintStyle: const TextStyle(
                             color: Color.fromARGB(129, 255, 255, 255),
                             fontSize: 16,
@@ -339,10 +344,22 @@ class _SignUpState extends State<SignUp> {
                               .createUserWithEmailAndPassword(
                                   email: emailController.text,
                                   password: passwordController.text)
-                              .then((value) {
+                              .then((value) async {
+                            //add fullname to collection 'userdata' to doc email address of user to firestore
+                            await FirebaseFirestore.instance
+                                .collection('userdata')
+                                .doc(emailController.text)
+                                .set({
+                              'name': fullNameController.text,
+                            });
+
                             //navigate to sign in page
-                            Navigator.push(context,
-                                SlideRightRoute(page: const HomePage()));
+                            Navigator.push(
+                                context,
+                                SlideRightRoute(
+                                    page: AddPan(
+                                  email: emailController.text,
+                                )));
                           }).catchError((e) {
                             //show snackbar
                             ScaffoldMessenger.of(context).showSnackBar(
