@@ -35,6 +35,8 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
+  firebase_core: ^2.24.2
+  firebase_auth: ^4.16.0
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +76,17 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Gotham
+      fonts:
+        - asset: fonts/GothamLight.ttf
+          weight: 300
+        - asset: fonts/GothamMedium.ttf
+          weight: 400
+        - asset: fonts/GothamBold.ttf
+          weight: 500
+        - asset: fonts/GothamBlack.otf
+          weight: 700
   # fonts:
   #   - family: Schyler
   #     fonts:
