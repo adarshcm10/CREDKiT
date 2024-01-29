@@ -1,6 +1,9 @@
 import 'package:credkit/signup.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
+//import firebase_auth
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -191,7 +194,53 @@ class _SignInState extends State<SignIn> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, right: 30, left: 30),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      //check if any of the fields are empty
+                      if (_usernameController.text.isEmpty ||
+                          _passwordController.text.isEmpty) {
+                        //show snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Please fill all the fields.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'Gotham',
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            backgroundColor: Color(0xFFFF6D00),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      } else {
+                        //check if the email is valid using regex
+                        RegExp emailRegex = RegExp(
+                            r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$');
+                        if (!emailRegex.hasMatch(_usernameController.text)) {
+                          //show snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              elevation: 1,
+                              content: Text(
+                                'Please enter a valid email address.',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              backgroundColor: Color(0xFFFF6D00),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        } else {}
+                      }
+                    },
                     child: Container(
                       width: double.infinity,
                       height: 50,

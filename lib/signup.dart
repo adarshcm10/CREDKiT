@@ -92,7 +92,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(
-                      bottom: 10, right: 10, left: 10, top: 20),
+                      bottom: 10, right: 30, left: 30, top: 20),
                   child: SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -135,7 +135,7 @@ class _SignUpState extends State<SignUp> {
                 //textfield with eye icon to show/hide password
                 Padding(
                   padding:
-                      const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                      const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -177,7 +177,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                      const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -227,7 +227,7 @@ class _SignUpState extends State<SignUp> {
                 ),
                 Padding(
                   padding:
-                      const EdgeInsets.only(bottom: 10, right: 10, left: 10),
+                      const EdgeInsets.only(bottom: 10, right: 30, left: 30),
                   child: SizedBox(
                     width: double.infinity,
                     height: 50,
@@ -278,7 +278,79 @@ class _SignUpState extends State<SignUp> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, right: 30, left: 30),
                   child: GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      //check any field is empty
+                      if (fullNameController.text.isEmpty ||
+                          emailController.text.isEmpty ||
+                          passwordController.text.isEmpty ||
+                          confirmPasswordController.text.isEmpty) {
+                        //show snackbar
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Please fill all fields',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontFamily: 'Gotham',
+                                fontWeight: FontWeight.w300,
+                              ),
+                            ),
+                            backgroundColor: Color(0xFFFF6D00),
+                            duration: Duration(seconds: 2),
+                          ),
+                        );
+                      } else {
+                        //check email is valid using regex
+                        if (RegExp(
+                                r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
+                            .hasMatch(emailController.text)) {
+                          //show snackbar
+                        } else {
+                          //show snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Please enter a valid email address',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              backgroundColor: Color(0xFFFF6D00),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                        //check password and confirm password are same
+                        if (passwordController.text ==
+                            confirmPasswordController.text) {
+                          //navigate to home screen
+                        } else {
+                          //show snackbar
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Password and Confirm Password are not same',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              backgroundColor: Color(0xFFFF6D00),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }
+                      }
+                    },
                     child: Container(
                       width: double.infinity,
                       height: 50,
