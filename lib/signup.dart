@@ -1,6 +1,11 @@
+import 'package:credkit/Home.dart';
 import 'package:credkit/signin.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
+//import firebase_core
+import 'package:firebase_core/firebase_core.dart';
+//import firebase_auth
+import 'package:firebase_auth/firebase_auth.dart';
 
 class SignUp extends StatefulWidget {
   const SignUp({super.key});
@@ -329,7 +334,34 @@ class _SignUpState extends State<SignUp> {
                         //check password and confirm password are same
                         if (passwordController.text ==
                             confirmPasswordController.text) {
-                          //navigate to home screen
+                          //sign up user using firebase
+                          FirebaseAuth.instance
+                              .createUserWithEmailAndPassword(
+                                  email: emailController.text,
+                                  password: passwordController.text)
+                              .then((value) {
+                            //navigate to sign in page
+                            Navigator.push(context,
+                                SlideRightRoute(page: const HomePage()));
+                          }).catchError((e) {
+                            //show snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text(
+                                  'Something went wrong',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Gotham',
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                backgroundColor: Color(0xFFFF6D00),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          });
                         } else {
                           //show snackbar
                           ScaffoldMessenger.of(context).showSnackBar(

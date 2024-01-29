@@ -1,3 +1,4 @@
+import 'package:credkit/Home.dart';
 import 'package:credkit/signup.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
@@ -238,7 +239,37 @@ class _SignInState extends State<SignIn> {
                               duration: Duration(seconds: 2),
                             ),
                           );
-                        } else {}
+                        } else {
+                          //sign in the user using firebase_auth
+                          FirebaseAuth.instance
+                              .signInWithEmailAndPassword(
+                                  email: _usernameController.text,
+                                  password: _passwordController.text)
+                              .then((value) {
+                            //navigate to home screen using fade transition
+                            Navigator.pushReplacement(
+                                context, FadeRoute(page: const HomePage()));
+                          }).catchError((e) {
+                            //show snackbar
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                elevation: 1,
+                                content: Text(
+                                  'An error occured. Please try again.',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                    fontFamily: 'Gotham',
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                backgroundColor: Color(0xFFFF6D00),
+                                duration: Duration(seconds: 2),
+                              ),
+                            );
+                          });
+                        }
                       }
                     },
                     child: Container(
