@@ -316,56 +316,55 @@ class _SignUpState extends State<SignUp> {
                         if (RegExp(
                                 r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
                             .hasMatch(emailController.text)) {
-                          //show snackbar
-                        } else {
-                          //show snackbar
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Please enter a valid email address',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                  fontFamily: 'Gotham',
-                                  fontWeight: FontWeight.w300,
-                                ),
-                              ),
-                              backgroundColor: Color(0xFFFF6D00),
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        }
-                        //check password and confirm password are same
-                        if (passwordController.text ==
-                            confirmPasswordController.text) {
-                          //sign up user using firebase
-                          FirebaseAuth.instance
-                              .createUserWithEmailAndPassword(
-                                  email: emailController.text,
-                                  password: passwordController.text)
-                              .then((value) async {
-                            //add fullname to collection 'userdata' to doc email address of user to firestore
-                            await FirebaseFirestore.instance
-                                .collection('userdata')
-                                .doc(emailController.text)
-                                .set({
-                              'name': fullNameController.text,
-                            });
+                          //check password and confirm password are same
+                          if (passwordController.text ==
+                              confirmPasswordController.text) {
+                            //sign up user using firebase
+                            FirebaseAuth.instance
+                                .createUserWithEmailAndPassword(
+                                    email: emailController.text,
+                                    password: passwordController.text)
+                                .then((value) async {
+                              //add fullname to collection 'userdata' to doc email address of user to firestore
+                              await FirebaseFirestore.instance
+                                  .collection('userdata')
+                                  .doc(emailController.text)
+                                  .set({
+                                'name': fullNameController.text,
+                              });
 
-                            //navigate to sign in page
-                            Navigator.push(
-                                context,
-                                SlideRightRoute(
-                                    page: AddPan(
-                                  email: emailController.text,
-                                )));
-                          }).catchError((e) {
+                              //navigate to pan page
+                              Navigator.push(
+                                  context,
+                                  SlideRightRoute(
+                                      page: AddPan(
+                                    email: emailController.text,
+                                  )));
+                            }).catchError((e) {
+                              //show snackbar
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text(
+                                    'Something went wrong',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'Gotham',
+                                      fontWeight: FontWeight.w300,
+                                    ),
+                                  ),
+                                  backgroundColor: Color(0xFFFF6D00),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            });
+                          } else {
                             //show snackbar
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
                                 content: Text(
-                                  'Something went wrong',
+                                  'Password and Confirm Password are not same',
                                   textAlign: TextAlign.center,
                                   style: TextStyle(
                                     color: Colors.white,
@@ -378,13 +377,13 @@ class _SignUpState extends State<SignUp> {
                                 duration: Duration(seconds: 2),
                               ),
                             );
-                          });
+                          }
                         } else {
                           //show snackbar
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(
                               content: Text(
-                                'Password and Confirm Password are not same',
+                                'Please enter a valid email address',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   color: Colors.white,
