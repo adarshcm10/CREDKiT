@@ -1,3 +1,4 @@
+import 'package:credkit/authpage.dart';
 import 'package:credkit/getstarted.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class _SpalshScreenState extends State<SpalshScreen> {
     Future.delayed(const Duration(seconds: 3), () {
       // Navigate to your desired screen here
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => const GetStarted()));
+          context, MaterialPageRoute(builder: (context) => const AuthPage()));
     });
   }
 
