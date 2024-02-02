@@ -1,6 +1,5 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:credkit/Home.dart';
 import 'package:credkit/pan.dart';
 import 'package:credkit/signin.dart';
 import 'package:credkit/transitions.dart';
@@ -335,11 +334,7 @@ class _SignUpState extends State<SignUp> {
 
                               //navigate to pan page
                               Navigator.push(
-                                  context,
-                                  SlideRightRoute(
-                                      page: AddPan(
-                                    email: emailController.text,
-                                  )));
+                                  context, SlideRightRoute(page: AddPan()));
                             }).catchError((e) {
                               //show snackbar
                               ScaffoldMessenger.of(context).showSnackBar(

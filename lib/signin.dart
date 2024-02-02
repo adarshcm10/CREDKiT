@@ -249,7 +249,7 @@ class _SignInState extends State<SignIn> {
                               .then((value) {
                             //navigate to home screen using fade transition
                             Navigator.pushReplacement(
-                                context, FadeRoute(page: const HomePage()));
+                                context, FadeRoute(page: const SpalshScreen()));
                           }).catchError((e) {
                             //show snackbar
                             ScaffoldMessenger.of(context).showSnackBar(
@@ -336,6 +336,36 @@ class _SignInState extends State<SignIn> {
               ],
             ),
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class SpalshScreen extends StatefulWidget {
+  const SpalshScreen({super.key});
+
+  @override
+  State<SpalshScreen> createState() => _SpalshScreenState();
+}
+
+class _SpalshScreenState extends State<SpalshScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 3), () {
+      // Navigate to your desired screen here
+      Navigator.push(context, FadeRoute(page: const HomePage()));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: Image.asset(
+          'assets/splash.gif',
+          //
         ),
       ),
     );

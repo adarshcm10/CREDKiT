@@ -3,8 +3,6 @@ import 'package:credkit/spalsh.dart';
 import 'package:flutter/material.dart';
 //import firebase_core
 import 'package:firebase_core/firebase_core.dart';
-//import cloud_firestore
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
