@@ -1,8 +1,6 @@
 import 'package:credkit/Home.dart';
 import 'package:credkit/getstarted.dart';
 import 'package:flutter/material.dart';
-//firebase_core
-import 'package:firebase_core/firebase_core.dart';
 //firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
 

@@ -1,11 +1,9 @@
 import 'package:credkit/Home.dart';
-import 'package:credkit/pan.dart';
 import 'package:credkit/signup.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});

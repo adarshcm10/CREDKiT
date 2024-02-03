@@ -4,8 +4,6 @@ import 'package:credkit/pan.dart';
 import 'package:credkit/signin.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
-//import firebase_core
-import 'package:firebase_core/firebase_core.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
 //import cloud_firestore

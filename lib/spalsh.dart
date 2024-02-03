@@ -1,5 +1,4 @@
 import 'package:credkit/authpage.dart';
-import 'package:credkit/getstarted.dart';
 import 'package:flutter/material.dart';
 
 class SpalshScreen extends StatefulWidget {

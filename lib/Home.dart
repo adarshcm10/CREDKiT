@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+//firebase auth
+import 'package:firebase_auth/firebase_auth.dart';
+//firestore
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -8,8 +13,417 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final String email = FirebaseAuth.instance.currentUser!.email.toString();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    return Scaffold(
+      appBar: AppBar(
+        title: Image.asset(
+          'assets/logo-small.png',
+          height: 25,
+        ),
+        backgroundColor: Colors.transparent,
+        centerTitle: true,
+        //menubar.png for opening drawer. add things to make it work on scaffold
+        leading: Builder(
+          builder: (context) => Padding(
+            padding: const EdgeInsets.only(left: 30),
+            child: IconButton(
+              padding: EdgeInsets.zero,
+              icon: Image.asset(
+                'assets/menubar.png',
+                height: 25,
+              ),
+              // replace 'assets/menubar.png' with your image path
+              onPressed: () => Scaffold.of(context).openDrawer(),
+            ),
+          ),
+        ),
+        //at right side add notification icon
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: IconButton(
+              icon: Image.asset(
+                'assets/notification.png',
+                height: 25,
+              ), // replace 'assets/notification.png' with your image path
+              onPressed: () {},
+            ),
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: const <Widget>[
+            DrawerHeader(
+              decoration: BoxDecoration(
+                color: Color(0xff0D1D2E),
+              ),
+              child: Text(
+                'CREDKiT',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                ),
+              ),
+            ),
+            ListTile(
+              title: Text('Home'),
+            ),
+            ListTile(
+              title: Text('Profile'),
+            ),
+            ListTile(
+              title: Text('Settings'),
+            ),
+            ListTile(
+              title: Text('Logout'),
+            ),
+          ],
+        ),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.only(left: 30, right: 30),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 30,
+            ),
+            //get name from collection 'userdata' and document with email
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('userdata')
+                  .doc(email)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return Text(
+                    'Hola ${snapshot.data!['name']}!',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w300,
+                      height: 0.07,
+                    ),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
+            const SizedBox(
+              height: 30,
+            ),
+            GestureDetector(
+              onTap: () {},
+              child: Container(
+                width: double.infinity,
+                height: 160,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    side: const BorderSide(width: 2, color: Color(0xFFFFDABF)),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+                child:
+                    //get due data from collection 'userdata' and document with email
+                    StreamBuilder<DocumentSnapshot>(
+                  stream: FirebaseFirestore.instance
+                      .collection('userdata')
+                      .doc(email)
+                      .snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          const Text(
+                            'Upcoming',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 19,
+                              fontFamily: 'Gotham',
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                          Text(
+                            NumberFormat.currency(
+                              locale: 'en_IN',
+                              symbol: '₹',
+                              decimalDigits: 0,
+                            ).format(int.parse(snapshot.data!['due'])),
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Color(0xFFFF6900),
+                              fontSize: 33,
+                              fontFamily: 'Gotham',
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            '${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).day}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).month}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).year}',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                              fontFamily: 'Gotham',
+                              fontWeight: FontWeight.w300,
+                            ),
+                          ),
+                          const Text(
+                            'View >>',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Color(0xFFFF6900),
+                              fontSize: 16,
+                              fontFamily: 'Gotham',
+                              fontWeight: FontWeight.w300,
+                            ),
+                          )
+                        ],
+                      );
+                    } else {
+                      return const CircularProgressIndicator();
+                    }
+                  },
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              'Your Requests',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontFamily: 'Gotham',
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            //get amount, pa, duration from collection 'offers' from document name with email
+            StreamBuilder<DocumentSnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('requests')
+                  .doc(email)
+                  .snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: [
+                        Container(
+                          width: double.infinity,
+                          height: 80,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                width: 2,
+                                color: Color(0xFFFFDABF),
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          NumberFormat.currency(
+                                            locale: 'en_IN',
+                                            symbol: '₹',
+                                            decimalDigits: 0,
+                                          ).format(int.parse(
+                                              snapshot.data!['amount'])),
+                                          style: const TextStyle(
+                                            color: Color(0xFFFF6900),
+                                            fontSize: 19,
+                                            fontFamily: 'Gotham',
+                                            fontWeight: FontWeight.w700,
+                                          ),
+                                        ),
+                                        Text(
+                                          '${snapshot.data!['duration']} months',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 13,
+                                            fontFamily: 'Gotham',
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Text(
+                                      '@ ${snapshot.data!['pa']} % pa.',
+                                      textAlign: TextAlign.right,
+                                      style: const TextStyle(
+                                        color: Color(0xFFFF6900),
+                                        fontSize: 13,
+                                        fontFamily: 'Gotham',
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                    const Text(
+                                      'View >>',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Color(0xFFFF6900),
+                                        fontSize: 11,
+                                        fontFamily: 'Gotham',
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
+
+            const SizedBox(
+              height: 15,
+            ),
+            const Text(
+              'All offers',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 13,
+                fontFamily: 'Gotham',
+                fontWeight: FontWeight.w300,
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            //get amount, pa, duration from collection 'offers' from all documents
+            StreamBuilder<QuerySnapshot>(
+              stream:
+                  FirebaseFirestore.instance.collection('offers').snapshots(),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return SingleChildScrollView(
+                    child: Column(
+                      children: List.generate(
+                        snapshot.data!.docs.length,
+                        (index) {
+                          return Container(
+                            width: double.infinity,
+                            height: 80,
+                            margin: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.all(10),
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                  width: 2,
+                                  color: Color(0xFFFFDABF),
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            NumberFormat.currency(
+                                              locale: 'en_IN',
+                                              symbol: '₹',
+                                              decimalDigits: 0,
+                                            ).format(int.parse(snapshot
+                                                .data!.docs[index]['amount'])),
+                                            style: const TextStyle(
+                                              color: Color(0xFFFF6900),
+                                              fontSize: 19,
+                                              fontFamily: 'Gotham',
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${snapshot.data!.docs[index]['duration']} months',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                              fontFamily: 'Gotham',
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        '@ ${snapshot.data!.docs[index]['pa']} % pa.',
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                          color: Color(0xFFFF6900),
+                                          fontSize: 13,
+                                          fontFamily: 'Gotham',
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'View >>',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Color(0xFFFF6900),
+                                          fontSize: 11,
+                                          fontFamily: 'Gotham',
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
