@@ -27,14 +27,16 @@ class _GetStartedState extends State<GetStarted> {
         child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 10, 20, 20),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Image.asset(
                 'assets/getstarted.png',
                 //width device width - 60
                 width: MediaQuery.of(context).size.width - 60,
+                //hei
               ),
-              const SizedBox(
-                height: 30,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.08,
               ),
               const Text.rich(
                 TextSpan(
@@ -73,8 +75,8 @@ class _GetStartedState extends State<GetStarted> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.06,
               ),
               const Text.rich(
                 TextSpan(
@@ -114,8 +116,8 @@ class _GetStartedState extends State<GetStarted> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(
-                height: 50,
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 0.08,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),

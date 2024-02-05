@@ -1,3 +1,5 @@
+import 'package:credkit/addRequest.dart';
+import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
 //firebase auth
 import 'package:firebase_auth/firebase_auth.dart';
@@ -48,7 +50,7 @@ class _HomePageState extends State<HomePage> {
               icon: Image.asset(
                 'assets/notification.png',
                 height: 25,
-              ), // replace 'assets/notification.png' with your image path
+              ),
               onPressed: () {},
             ),
           ),
@@ -221,82 +223,89 @@ class _HomePageState extends State<HomePage> {
                   return SingleChildScrollView(
                     child: Column(
                       children: [
-                        Container(
-                          width: double.infinity,
-                          height: 80,
-                          margin: const EdgeInsets.only(bottom: 10),
-                          padding: const EdgeInsets.all(10),
-                          decoration: ShapeDecoration(
-                            shape: RoundedRectangleBorder(
-                              side: const BorderSide(
-                                width: 2,
-                                color: Color(0xFFFFDABF),
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 10),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          NumberFormat.currency(
-                                            locale: 'en_IN',
-                                            symbol: '₹',
-                                            decimalDigits: 0,
-                                          ).format(int.parse(
-                                              snapshot.data!['amount'])),
-                                          style: const TextStyle(
-                                            color: Color(0xFFFF6900),
-                                            fontSize: 19,
-                                            fontFamily: 'Gotham',
-                                            fontWeight: FontWeight.w700,
-                                          ),
-                                        ),
-                                        Text(
-                                          '${snapshot.data!['duration']} months',
-                                          style: const TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 13,
-                                            fontFamily: 'Gotham',
-                                            fontWeight: FontWeight.w300,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Text(
-                                      '@ ${snapshot.data!['pa']} % pa.',
-                                      textAlign: TextAlign.right,
-                                      style: const TextStyle(
-                                        color: Color(0xFFFF6900),
-                                        fontSize: 13,
-                                        fontFamily: 'Gotham',
-                                        fontWeight: FontWeight.w300,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'View >>',
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(
-                                        color: Color(0xFFFF6900),
-                                        fontSize: 11,
-                                        fontFamily: 'Gotham',
-                                        fontWeight: FontWeight.w300,
-                                      ),
-                                    )
-                                  ],
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context, FadeRoute(page: const AddRequest()));
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            height: 80,
+                            margin: const EdgeInsets.only(bottom: 10),
+                            padding: const EdgeInsets.all(10),
+                            decoration: ShapeDecoration(
+                              shape: RoundedRectangleBorder(
+                                side: const BorderSide(
+                                  width: 2,
+                                  color: Color(0xFFFFDABF),
                                 ),
+                                borderRadius: BorderRadius.circular(10),
                               ),
-                            ],
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            NumberFormat.currency(
+                                              locale: 'en_IN',
+                                              symbol: '₹',
+                                              decimalDigits: 0,
+                                            ).format(int.parse(
+                                                snapshot.data!['amount'])),
+                                            style: const TextStyle(
+                                              color: Color(0xFFFF6900),
+                                              fontSize: 19,
+                                              fontFamily: 'Gotham',
+                                              fontWeight: FontWeight.w700,
+                                            ),
+                                          ),
+                                          Text(
+                                            '${snapshot.data!['duration']} months',
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                              fontFamily: 'Gotham',
+                                              fontWeight: FontWeight.w300,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Text(
+                                        '@ ${snapshot.data!['pa']} % pa.',
+                                        textAlign: TextAlign.right,
+                                        style: const TextStyle(
+                                          color: Color(0xFFFF6900),
+                                          fontSize: 13,
+                                          fontFamily: 'Gotham',
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      ),
+                                      const Text(
+                                        'View >>',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Color(0xFFFF6900),
+                                          fontSize: 11,
+                                          fontFamily: 'Gotham',
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -350,6 +359,7 @@ class _HomePageState extends State<HomePage> {
                             ),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.only(right: 10),
