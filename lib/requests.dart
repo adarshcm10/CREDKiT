@@ -36,19 +36,6 @@ class _MyRequestsState extends State<MyRequests> {
             ),
           ),
         ),
-        //at right side add notification icon
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-              icon: Image.asset(
-                'assets/notification.png',
-                height: 25,
-              ),
-              onPressed: () {},
-            ),
-          ),
-        ],
       ),
       body: SizedBox(
         width: double.infinity,

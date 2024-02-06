@@ -35,7 +35,7 @@ class _GetStartedState extends State<GetStarted> {
                 //width: MediaQuery.of(context).size.width - 60,
                 //hei
               ),
-              SizedBox(
+              const SizedBox(
                 height: 40,
               ),
               const Text.rich(
@@ -75,7 +75,7 @@ class _GetStartedState extends State<GetStarted> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               const Text.rich(
@@ -116,7 +116,7 @@ class _GetStartedState extends State<GetStarted> {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               Padding(
@@ -127,7 +127,7 @@ class _GetStartedState extends State<GetStarted> {
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context, SlideRightRoute(page: SignIn()));
+                            context, SlideRightRoute(page: const SignIn()));
                       },
                       child: Container(
                         width: 145,
@@ -157,7 +157,7 @@ class _GetStartedState extends State<GetStarted> {
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
-                            context, SlideRightRoute(page: SignUp()));
+                            context, SlideRightRoute(page: const SignUp()));
                       },
                       child: Container(
                         width: 145,

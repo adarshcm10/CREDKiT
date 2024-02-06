@@ -42,19 +42,6 @@ class _AddRequestState extends State<AddRequest> {
             ),
           ),
         ),
-        //at right side add notification icon
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: IconButton(
-              icon: Image.asset(
-                'assets/notification.png',
-                height: 25,
-              ), // replace 'assets/notification.png' with your image path
-              onPressed: () {},
-            ),
-          ),
-        ],
       ),
       body: SizedBox(
         width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:credkit/addRequest.dart';
+import 'package:credkit/offeraccept.dart';
 import 'package:credkit/profile.dart';
 import 'package:credkit/requests.dart';
 import 'package:credkit/transitions.dart';
@@ -399,94 +400,159 @@ class _HomePageState extends State<HomePage> {
                   FirebaseFirestore.instance.collection('offers').snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasData) {
-                  return SingleChildScrollView(
-                    child: Column(
-                      children: List.generate(
-                        snapshot.data!.docs.length,
-                        (index) {
-                          return Container(
-                            width: double.infinity,
-                            height: 80,
-                            margin: const EdgeInsets.only(bottom: 10),
-                            padding: const EdgeInsets.all(10),
-                            decoration: ShapeDecoration(
-                              shape: RoundedRectangleBorder(
-                                side: const BorderSide(
-                                  width: 2,
-                                  color: Color(0xFFFFDABF),
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 10),
-                                  child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            NumberFormat.currency(
-                                              locale: 'en_IN',
-                                              symbol: '₹',
-                                              decimalDigits: 0,
-                                            ).format(int.parse(snapshot
-                                                .data!.docs[index]['amount'])),
-                                            style: const TextStyle(
-                                              color: Color(0xFFFF6900),
-                                              fontSize: 19,
-                                              fontFamily: 'Gotham',
-                                              fontWeight: FontWeight.w700,
-                                            ),
-                                          ),
-                                          Text(
-                                            '${snapshot.data!.docs[index]['duration']} months',
-                                            style: const TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 13,
-                                              fontFamily: 'Gotham',
-                                              fontWeight: FontWeight.w300,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      Text(
-                                        '@ ${snapshot.data!.docs[index]['pa']} % pa.',
-                                        textAlign: TextAlign.right,
-                                        style: const TextStyle(
-                                          color: Color(0xFFFF6900),
-                                          fontSize: 13,
-                                          fontFamily: 'Gotham',
-                                          fontWeight: FontWeight.w300,
+                  return snapshot.data!.docs.isNotEmpty
+                      ? SingleChildScrollView(
+                          child: Column(
+                            children: List.generate(
+                              snapshot.data!.docs.length,
+                              (index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    Navigator.push(
+                                        context,
+                                        SlideRightRoute(
+                                            page: AcceptOffer(
+                                                docid: snapshot
+                                                    .data!.docs[index].id)));
+                                  },
+                                  child: Container(
+                                    width: double.infinity,
+                                    height: 80,
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    padding: const EdgeInsets.all(10),
+                                    decoration: ShapeDecoration(
+                                      shape: RoundedRectangleBorder(
+                                        side: const BorderSide(
+                                          width: 2,
+                                          color: Color(0xFFFFDABF),
                                         ),
+                                        borderRadius: BorderRadius.circular(10),
                                       ),
-                                      const Text(
-                                        'View >>',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Color(0xFFFF6900),
-                                          fontSize: 11,
-                                          fontFamily: 'Gotham',
-                                          fontWeight: FontWeight.w300,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Padding(
+                                          padding:
+                                              const EdgeInsets.only(right: 10),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    NumberFormat.currency(
+                                                      locale: 'en_IN',
+                                                      symbol: '₹',
+                                                      decimalDigits: 0,
+                                                    ).format(int.parse(snapshot
+                                                            .data!.docs[index]
+                                                        ['amount'])),
+                                                    style: const TextStyle(
+                                                      color: Color(0xFFFF6900),
+                                                      fontSize: 19,
+                                                      fontFamily: 'Gotham',
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    '${snapshot.data!.docs[index]['duration']} months',
+                                                    style: const TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13,
+                                                      fontFamily: 'Gotham',
+                                                      fontWeight:
+                                                          FontWeight.w300,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                              Text(
+                                                '@ ${snapshot.data!.docs[index]['pa']} % pa.',
+                                                textAlign: TextAlign.right,
+                                                style: const TextStyle(
+                                                  color: Color(0xFFFF6900),
+                                                  fontSize: 13,
+                                                  fontFamily: 'Gotham',
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              ),
+                                              const Text(
+                                                'View >>',
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                  color: Color(0xFFFF6900),
+                                                  fontSize: 11,
+                                                  fontFamily: 'Gotham',
+                                                  fontWeight: FontWeight.w300,
+                                                ),
+                                              )
+                                            ],
+                                          ),
                                         ),
-                                      )
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                              ],
+                                );
+                              },
                             ),
-                          );
-                        },
-                      ),
-                    ),
-                  );
+                          ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          //height: 80,
+                          margin: const EdgeInsets.only(bottom: 10),
+                          padding: const EdgeInsets.all(10),
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                width: 2,
+                                color: Color(0xFFFFDABF),
+                              ),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'No requests yet!',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                'Stay tuned.',
+                                style: TextStyle(
+                                  color: Color(0xFFFF6900),
+                                  fontSize: 11,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                            ],
+                          ),
+                        );
                 } else {
                   return const CircularProgressIndicator();
                 }
