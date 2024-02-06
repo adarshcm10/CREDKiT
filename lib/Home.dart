@@ -1,4 +1,5 @@
 import 'package:credkit/addRequest.dart';
+import 'package:credkit/profile.dart';
 import 'package:credkit/requests.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
@@ -52,7 +53,10 @@ class _HomePageState extends State<HomePage> {
                 'assets/notification.png',
                 height: 25,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                    context, SlideRightRoute(page: const ProfilePage()));
+              },
             ),
           ),
         ],

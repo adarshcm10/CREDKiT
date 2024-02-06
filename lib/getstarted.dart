@@ -32,11 +32,11 @@ class _GetStartedState extends State<GetStarted> {
               Image.asset(
                 'assets/getstarted.png',
                 //width device width - 60
-                width: MediaQuery.of(context).size.width - 60,
+                //width: MediaQuery.of(context).size.width - 60,
                 //hei
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.08,
+                height: 40,
               ),
               const Text.rich(
                 TextSpan(
@@ -76,7 +76,7 @@ class _GetStartedState extends State<GetStarted> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.06,
+                height: 30,
               ),
               const Text.rich(
                 TextSpan(
@@ -117,7 +117,7 @@ class _GetStartedState extends State<GetStarted> {
                 textAlign: TextAlign.center,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.08,
+                height: 50,
               ),
               Padding(
                 padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
