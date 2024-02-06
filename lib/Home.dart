@@ -1,4 +1,5 @@
 import 'package:credkit/addRequest.dart';
+import 'package:credkit/requests.dart';
 import 'package:credkit/transitions.dart';
 import 'package:flutter/material.dart';
 //firebase auth
@@ -225,8 +226,8 @@ class _HomePageState extends State<HomePage> {
                       children: [
                         GestureDetector(
                           onTap: () {
-                            Navigator.push(
-                                context, FadeRoute(page: const AddRequest()));
+                            Navigator.push(context,
+                                SlideRightRoute(page: const MyRequests()));
                           },
                           child: Container(
                             width: double.infinity,
