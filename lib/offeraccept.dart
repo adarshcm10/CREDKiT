@@ -74,7 +74,15 @@ class _AcceptOfferState extends State<AcceptOffer> {
                   }
 
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const CircularProgressIndicator();
+                    return const Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 19,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w300,
+                      ),
+                    );
                   }
 
                   return Column(

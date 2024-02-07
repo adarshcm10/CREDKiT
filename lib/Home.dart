@@ -1,4 +1,5 @@
 import 'package:credkit/addRequest.dart';
+import 'package:credkit/duepayment.dart';
 import 'package:credkit/offeraccept.dart';
 import 'package:credkit/profile.dart';
 import 'package:credkit/requests.dart';
@@ -120,7 +121,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return const Text(
+                    'Loading...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  );
                 }
               },
             ),
@@ -128,7 +137,10 @@ class _HomePageState extends State<HomePage> {
               height: 30,
             ),
             GestureDetector(
-              onTap: () {},
+              onTap: () {
+                //navigate to duepayment.dart
+                Navigator.push(context, FadeRoute(page: const DuePage()));
+              },
               child: Container(
                 width: double.infinity,
                 height: 160,
@@ -197,7 +209,15 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     } else {
-                      return const CircularProgressIndicator();
+                      return const Text(
+                        'Loading...',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 19,
+                          fontFamily: 'Gotham',
+                          fontWeight: FontWeight.w300,
+                        ),
+                      );
                     }
                   },
                 ),
@@ -374,7 +394,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  return const CircularProgressIndicator();
+                  return const Text(
+                    'Loading...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  );
                 }
               },
             ),
@@ -527,7 +555,7 @@ class _HomePageState extends State<HomePage> {
                                 height: 10,
                               ),
                               Text(
-                                'No requests yet!',
+                                'No Offers yet!',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
@@ -554,7 +582,15 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                 } else {
-                  return const CircularProgressIndicator();
+                  return const Text(
+                    'Loading...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  );
                 }
               },
             ),

@@ -142,7 +142,15 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   );
                 } else {
-                  return CircularProgressIndicator();
+                  return const Text(
+                    'Loading...',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 19,
+                      fontFamily: 'Gotham',
+                      fontWeight: FontWeight.w300,
+                    ),
+                  );
                 }
               },
             ),
@@ -219,8 +227,14 @@ class _ProfilePageState extends State<ProfilePage> {
                           ],
                         );
                       } else {
-                        return const CircularProgressIndicator(
-                          color: Colors.white,
+                        return const Text(
+                          'Loading...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontFamily: 'Gotham',
+                            fontWeight: FontWeight.w300,
+                          ),
                         );
                       }
                     },

@@ -1,17 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-//import firestore
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-class MyRequests extends StatefulWidget {
-  const MyRequests({super.key});
+class DuePage extends StatefulWidget {
+  const DuePage({super.key});
 
   @override
-  State<MyRequests> createState() => _MyRequestsState();
+  State<DuePage> createState() => _DuePageState();
 }
 
-class _MyRequestsState extends State<MyRequests> {
+class _DuePageState extends State<DuePage> {
   final String email = FirebaseAuth.instance.currentUser!.email.toString();
   @override
   Widget build(BuildContext context) {
@@ -40,29 +39,13 @@ class _MyRequestsState extends State<MyRequests> {
       body: SizedBox(
         width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
+            SizedBox(
               height: 30,
             ),
-            const Center(
-              child: Text(
-                'My Request',
-                style: TextStyle(
-                  color: Color(0xFFFF6900),
-                  fontSize: 21,
-                  fontFamily: 'Gotham',
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 30,
-            ),
-            //get amount, duration and pa values from collection requests and cument email
             StreamBuilder<QuerySnapshot>(
               stream: FirebaseFirestore.instance
-                  .collection('requests')
+                  .collection('userdata')
                   .where(email)
                   .snapshots(),
               builder: (BuildContext context,
@@ -104,13 +87,13 @@ class _MyRequestsState extends State<MyRequests> {
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
                                 const SizedBox(
-                                  height: 10,
+                                  height: 30,
                                 ),
                                 Text(
-                                  'For ${snapshot.data!.docs[0]['duration']} months',
+                                  '${snapshot.data!.docs[0]['duedate'].toDate().difference(DateTime.now()).inDays} days left for the due of',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 19,
+                                    fontSize: 16,
                                     fontFamily: 'Gotham',
                                     fontWeight: FontWeight.w300,
                                   ),
@@ -120,8 +103,8 @@ class _MyRequestsState extends State<MyRequests> {
                                     locale: 'en_IN',
                                     symbol: '₹',
                                     decimalDigits: 0,
-                                  ).format(int.parse(
-                                      snapshot.data!.docs[0]['amount'])),
+                                  ).format(
+                                      int.parse(snapshot.data!.docs[0]['due'])),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Color(0xFFFF6900),
@@ -131,16 +114,16 @@ class _MyRequestsState extends State<MyRequests> {
                                   ),
                                 ),
                                 Text(
-                                  'at ${snapshot.data!.docs[0]['pa']}%',
+                                  'On ${DateFormat('dd-MM-yyyy').format(snapshot.data!.docs[0]['duedate'].toDate())}',
                                   style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 19,
+                                    fontSize: 16,
                                     fontFamily: 'Gotham',
                                     fontWeight: FontWeight.w300,
                                   ),
                                 ),
                                 const SizedBox(
-                                  height: 10,
+                                  height: 30,
                                 ),
                               ],
                             )
@@ -148,45 +131,6 @@ class _MyRequestsState extends State<MyRequests> {
                     ));
               },
             ),
-            const SizedBox(
-              height: 30,
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 30, right: 30),
-              child: GestureDetector(
-                onTap: () async {
-                  await FirebaseFirestore.instance
-                      .collection('requests')
-                      .doc(email)
-                      .delete();
-                  Navigator.pop(context);
-                },
-                child: Container(
-                  width: double.infinity,
-                  height: 50,
-                  decoration: ShapeDecoration(
-                    color: const Color(0xFFFF6D00),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Delete Request',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontFamily: 'Gotham Black',
-                        fontWeight: FontWeight.w700,
-                        height: 0,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            //delete document email from collection requests
           ],
         ),
       ),
