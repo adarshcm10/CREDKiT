@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:credkit/addRequest.dart';
 import 'package:credkit/duepayment.dart';
 import 'package:credkit/offeraccept.dart';

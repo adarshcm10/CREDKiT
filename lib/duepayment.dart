@@ -40,7 +40,7 @@ class _DuePageState extends State<DuePage> {
         width: double.infinity,
         child: Column(
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             StreamBuilder<QuerySnapshot>(
@@ -125,6 +125,174 @@ class _DuePageState extends State<DuePage> {
                                 const SizedBox(
                                   height: 30,
                                 ),
+                                //pay now button
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      left: 30, right: 30),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      //show dialogue
+                                      showDialog(
+                                        context: context,
+                                        builder: (BuildContext context) {
+                                          return AlertDialog(
+                                            title: const Text(
+                                              'Payment Methods',
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                            content: SizedBox(
+                                              height: 160,
+                                              child: Column(
+                                                children: [
+                                                  //gesture detector for payment options
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      //pop
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      //show dialogue with success.gif
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext
+                                                            context) {
+                                                          return AlertDialog(
+                                                            content:
+                                                                Image.asset(
+                                                              'assets/success.gif',
+                                                              height: 100,
+                                                            ),
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      height: 50,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                            0xFFFF6900),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: const Center(
+                                                        child: Text(
+                                                          'GooglePay',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16,
+                                                            fontFamily:
+                                                                'Gotham',
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      //redirect to payment gateway
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      height: 50,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                            0xFFFF6900),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: const Center(
+                                                        child: Text(
+                                                          'Paytm',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16,
+                                                            fontFamily:
+                                                                'Gotham',
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5,
+                                                  ),
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      //redirect to payment gateway
+                                                    },
+                                                    child: Container(
+                                                      width: double.infinity,
+                                                      height: 50,
+                                                      decoration: BoxDecoration(
+                                                        color: const Color(
+                                                            0xFFFF6900),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(10),
+                                                      ),
+                                                      child: const Center(
+                                                        child: Text(
+                                                          'Pay with UPI',
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 16,
+                                                            fontFamily:
+                                                                'Gotham',
+                                                            fontWeight:
+                                                                FontWeight.w300,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  Navigator.of(context).pop();
+                                                },
+                                                child: const Text('Cancel'),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 50,
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFFFF6900),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          'Pay Now',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16,
+                                            fontFamily: 'Gotham',
+                                            fontWeight: FontWeight.w300,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 20,
+                                )
                               ],
                             )
                           : const Center(child: Text('No data')),
