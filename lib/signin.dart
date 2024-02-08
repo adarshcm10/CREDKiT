@@ -15,7 +15,7 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _passwordVisible = false;
+  bool _passwordVisible = true;
   var icon = Icons.visibility_off;
 
   void passwordVisibility() {

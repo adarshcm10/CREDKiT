@@ -150,19 +150,18 @@ class _DuePageState extends State<DuePage> {
                                                       //pop
                                                       Navigator.of(context)
                                                           .pop();
-                                                      //show dialogue with success.gif
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext
-                                                            context) {
-                                                          return AlertDialog(
-                                                            content:
-                                                                Image.asset(
-                                                              'assets/success.gif',
-                                                              height: 100,
-                                                            ),
-                                                          );
-                                                        },
+                                                      //show snackabr for payment success
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Center(
+                                                            child: Text(
+                                                                'Payment Successful'),
+                                                          ),
+                                                          backgroundColor:
+                                                              Color(0xFFFF6900),
+                                                        ),
                                                       );
                                                     },
                                                     child: Container(
@@ -258,11 +257,13 @@ class _DuePageState extends State<DuePage> {
                                               ),
                                             ),
                                             actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  Navigator.of(context).pop();
-                                                },
-                                                child: const Text('Cancel'),
+                                              Center(
+                                                child: TextButton(
+                                                  onPressed: () {
+                                                    Navigator.of(context).pop();
+                                                  },
+                                                  child: const Text('Cancel'),
+                                                ),
                                               ),
                                             ],
                                           );
@@ -299,6 +300,136 @@ class _DuePageState extends State<DuePage> {
                     ));
               },
             ),
+            SizedBox(
+              height: 30,
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 30),
+              child: Row(
+                children: [
+                  Text('Recent Payments',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w300,
+                      )),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            //display amount and date from collection userdata , document email and subcollection history
+            StreamBuilder<QuerySnapshot>(
+              stream: FirebaseFirestore.instance
+                  .collection('userdata')
+                  .doc(email)
+                  .collection('history')
+                  .orderBy('date', descending: true)
+                  .snapshots(),
+              builder: (BuildContext context,
+                  AsyncSnapshot<QuerySnapshot> snapshot) {
+                if (snapshot.hasError) {
+                  return const Text('Something went wrong');
+                }
+
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 19,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                }
+
+                return snapshot.data!.docs.isNotEmpty
+                    ? Column(
+                        children: snapshot.data!.docs
+                            .map((DocumentSnapshot document) {
+                          Map<String, dynamic> data =
+                              document.data()! as Map<String, dynamic>;
+                          return Padding(
+                            padding: const EdgeInsets.only(
+                                left: 30, right: 30, bottom: 10),
+                            child: Container(
+                              width: double.infinity,
+                              height: 70,
+                              decoration: ShapeDecoration(
+                                shape: RoundedRectangleBorder(
+                                  side: const BorderSide(
+                                      width: 2, color: Color(0xFFFFDABF)),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.only(left: 10, right: 10),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      NumberFormat.currency(
+                                        locale: 'en_IN',
+                                        symbol: '₹',
+                                        decimalDigits: 0,
+                                      ).format(int.parse(data['amount'])),
+                                      style: const TextStyle(
+                                        color: Color(0xFFFF6900),
+                                        fontSize: 16,
+                                        fontFamily: 'Gotham',
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
+                                    Text(
+                                      DateFormat('dd-MM-yyyy')
+                                          .format(data['date'].toDate()),
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Gotham',
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(left: 30, right: 30),
+                        child: Container(
+                          width: double.infinity,
+                          height: 50,
+                          decoration: ShapeDecoration(
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(
+                                  width: 2, color: Color(0xFFFFDABF)),
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Center(
+                            child: Text('No recent transaction',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
+                                )),
+                          ),
+                        ),
+                      );
+              },
+            )
+            //
           ],
         ),
       ),
