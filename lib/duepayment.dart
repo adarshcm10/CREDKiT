@@ -103,8 +103,9 @@ class _DuePageState extends State<DuePage> {
                                     locale: 'en_IN',
                                     symbol: '₹',
                                     decimalDigits: 0,
-                                  ).format(
-                                      int.parse(snapshot.data!.docs[0]['due'])),
+                                  ).format(int.parse(snapshot
+                                      .data!.docs[0]['due']
+                                      .toString())),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Color(0xFFFF6900),
