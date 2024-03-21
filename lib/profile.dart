@@ -1,3 +1,6 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'package:credkit/duepayment.dart';
 import 'package:credkit/getstarted.dart';
 import 'package:credkit/transitions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -62,10 +65,10 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
-            Center(
+            const Center(
               child: Text('My Profile',
                   style: TextStyle(
                     fontSize: 21,
@@ -73,7 +76,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     fontWeight: FontWeight.w700,
                   )),
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             //get name from collection 'userdata' and document with email
@@ -91,7 +94,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       children: [
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               'Name:',
                               style: TextStyle(
                                 fontSize: 14,
@@ -99,12 +102,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontWeight: FontWeight.w200,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             Text(
                               snapshot.data!['name'],
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -112,12 +115,12 @@ class _ProfilePageState extends State<ProfilePage> {
                             ),
                           ],
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 10,
                         ),
                         Row(
                           children: [
-                            Text(
+                            const Text(
                               'Email:',
                               style: TextStyle(
                                 fontSize: 14,
@@ -125,12 +128,12 @@ class _ProfilePageState extends State<ProfilePage> {
                                 fontWeight: FontWeight.w200,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               width: 5,
                             ),
                             Text(
                               email,
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.white,
                                 fontWeight: FontWeight.w500,
@@ -157,7 +160,10 @@ class _ProfilePageState extends State<ProfilePage> {
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30, top: 30),
               child: GestureDetector(
-                onTap: () {},
+                onTap: () {
+                  //navigate to duepayment.dart
+                  Navigator.push(context, FadeRoute(page: const DuePage()));
+                },
                 child: Container(
                   width: double.infinity,
                   height: 160,
@@ -195,7 +201,8 @@ class _ProfilePageState extends State<ProfilePage> {
                                 locale: 'en_IN',
                                 symbol: '₹',
                                 decimalDigits: 0,
-                              ).format(int.parse(snapshot.data!['due'])),
+                              ).format(
+                                  int.parse(snapshot.data!['due'].toString())),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Color(0xFFFF6900),
