@@ -36,8 +36,8 @@ class _DuePageState extends State<DuePage> {
           ),
         ),
       ),
-      body: SizedBox(
-        width: double.infinity,
+      body: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
             const SizedBox(
@@ -86,11 +86,17 @@ class _DuePageState extends State<DuePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                const SizedBox(
-                                  height: 30,
-                                ),
+                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                    ? const SizedBox(
+                                        height: 20,
+                                      )
+                                    : const SizedBox(
+                                        height: 20,
+                                      ),
                                 Text(
-                                  '${snapshot.data!.docs[0]['duedate'].toDate().difference(DateTime.now()).inDays} days left for the due of',
+                                  snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                      ? '${snapshot.data!.docs[0]['duedate'].toDate().difference(DateTime.now()).inDays} days left for the due of'
+                                      : 'You have no dues left',
                                   style: const TextStyle(
                                     color: Colors.white,
                                     fontSize: 16,
@@ -98,6 +104,7 @@ class _DuePageState extends State<DuePage> {
                                     fontWeight: FontWeight.w300,
                                   ),
                                 ),
+
                                 Text(
                                   NumberFormat.currency(
                                     locale: 'en_IN',
@@ -114,289 +121,435 @@ class _DuePageState extends State<DuePage> {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                Text(
-                                  'On ${DateFormat('dd-MM-yyyy').format(snapshot.data!.docs[0]['duedate'].toDate())}',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: 'Gotham',
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 30,
-                                ),
+                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                    ? Text(
+                                        'On ${DateFormat('dd-MM-yyyy').format(snapshot.data!.docs[0]['duedate'].toDate())}',
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontFamily: 'Gotham',
+                                          fontWeight: FontWeight.w300,
+                                        ),
+                                      )
+                                    : const SizedBox(
+                                        height: 0,
+                                      ),
+
                                 //pay now button
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 30, right: 30),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      //show dialogue
-                                      showDialog(
-                                        context: context,
-                                        builder: (BuildContext context) {
-                                          return AlertDialog(
-                                            title: const Text(
-                                              'Payment Methods',
-                                              style: TextStyle(fontSize: 16),
+                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                    ? Padding(
+                                        padding: const EdgeInsets.only(
+                                            left: 30, right: 30),
+                                        child: GestureDetector(
+                                          onTap: () {
+                                            //show dialogue
+                                            showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) {
+                                                return AlertDialog(
+                                                  title: const Text(
+                                                    'Payment Methods',
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  ),
+                                                  content: SizedBox(
+                                                    height: 160,
+                                                    child: Column(
+                                                      children: [
+                                                        //gesture detector for payment options
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            //pop
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            //show snackabr for payment success
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                content: Center(
+                                                                  child: Text(
+                                                                      'Payment Successful'),
+                                                                ),
+                                                                backgroundColor:
+                                                                    Color(
+                                                                        0xFFFF6900),
+                                                              ),
+                                                            );
+                                                            //get duedate from firebase and add 28 days to duedate and add to firebase
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'userdata')
+                                                                .doc(email)
+                                                                .get()
+                                                                .then((doc) {
+                                                              var newDueDate = snapshot
+                                                                  .data!
+                                                                  .docs[0][
+                                                                      'duedate']
+                                                                  .toDate()
+                                                                  .add(const Duration(
+                                                                      days:
+                                                                          28));
+                                                              if (doc
+                                                                  .data()![
+                                                                      'end']
+                                                                  .toDate()
+                                                                  .isBefore(
+                                                                      newDueDate)) {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      'NULL',
+                                                                  'due': 0,
+                                                                });
+                                                              } else {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      newDueDate,
+                                                                });
+                                                              }
+                                                            });
+                                                            //add due amount and todays date as timestamp to subcollection history in firebase
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'userdata')
+                                                                .doc(email)
+                                                                .collection(
+                                                                    'history')
+                                                                .add({
+                                                              'amount': snapshot
+                                                                      .data!
+                                                                      .docs[0]
+                                                                  ['due'],
+                                                              'date': Timestamp
+                                                                  .now()
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width:
+                                                                double.infinity,
+                                                            height: 50,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: const Color(
+                                                                  0xFFFF6900),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: const Center(
+                                                              child: Text(
+                                                                'GooglePay',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16,
+                                                                  fontFamily:
+                                                                      'Gotham',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            //pop
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            //show snackabr for payment success
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                content: Center(
+                                                                  child: Text(
+                                                                      'Payment Successful'),
+                                                                ),
+                                                                backgroundColor:
+                                                                    Color(
+                                                                        0xFFFF6900),
+                                                              ),
+                                                            );
+                                                            //get duedate from firebase and add 28 days to duedate and add to firebase
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'userdata')
+                                                                .doc(email)
+                                                                .get()
+                                                                .then((doc) {
+                                                              var newDueDate = snapshot
+                                                                  .data!
+                                                                  .docs[0][
+                                                                      'duedate']
+                                                                  .toDate()
+                                                                  .add(const Duration(
+                                                                      days:
+                                                                          28));
+                                                              if (doc
+                                                                  .data()![
+                                                                      'end']
+                                                                  .toDate()
+                                                                  .isBefore(
+                                                                      newDueDate)) {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      'NULL',
+                                                                  'due': 0,
+                                                                });
+                                                              } else {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      newDueDate,
+                                                                });
+                                                              }
+                                                            });
+                                                            //add due amount and todays date as timestamp to subcollection history in firebase
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'userdata')
+                                                                .doc(email)
+                                                                .collection(
+                                                                    'history')
+                                                                .add({
+                                                              'amount': snapshot
+                                                                      .data!
+                                                                      .docs[0]
+                                                                  ['due'],
+                                                              'date': Timestamp
+                                                                  .now()
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width:
+                                                                double.infinity,
+                                                            height: 50,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: const Color(
+                                                                  0xFFFF6900),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: const Center(
+                                                              child: Text(
+                                                                'Paytm',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16,
+                                                                  fontFamily:
+                                                                      'Gotham',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        const SizedBox(
+                                                          height: 5,
+                                                        ),
+                                                        GestureDetector(
+                                                          onTap: () {
+                                                            //pop
+                                                            Navigator.of(
+                                                                    context)
+                                                                .pop();
+                                                            //show snackabr for payment success
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                              const SnackBar(
+                                                                content: Center(
+                                                                  child: Text(
+                                                                      'Payment Successful'),
+                                                                ),
+                                                                backgroundColor:
+                                                                    Color(
+                                                                        0xFFFF6900),
+                                                              ),
+                                                            );
+                                                            //get duedate from firebase and add 28 days to duedate and add to firebase
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'userdata')
+                                                                .doc(email)
+                                                                .get()
+                                                                .then((doc) {
+                                                              var newDueDate = snapshot
+                                                                  .data!
+                                                                  .docs[0][
+                                                                      'duedate']
+                                                                  .toDate()
+                                                                  .add(const Duration(
+                                                                      days:
+                                                                          28));
+                                                              if (doc
+                                                                  .data()![
+                                                                      'end']
+                                                                  .toDate()
+                                                                  .isBefore(
+                                                                      newDueDate)) {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      'NULL',
+                                                                  'due': 0,
+                                                                });
+                                                              } else {
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      newDueDate,
+                                                                });
+                                                              }
+                                                            });
+                                                            //add due amount and todays date as timestamp to subcollection history in firebase
+                                                            FirebaseFirestore
+                                                                .instance
+                                                                .collection(
+                                                                    'userdata')
+                                                                .doc(email)
+                                                                .collection(
+                                                                    'history')
+                                                                .add({
+                                                              'amount': snapshot
+                                                                      .data!
+                                                                      .docs[0]
+                                                                  ['due'],
+                                                              'date': Timestamp
+                                                                  .now()
+                                                            });
+                                                          },
+                                                          child: Container(
+                                                            width:
+                                                                double.infinity,
+                                                            height: 50,
+                                                            decoration:
+                                                                BoxDecoration(
+                                                              color: const Color(
+                                                                  0xFFFF6900),
+                                                              borderRadius:
+                                                                  BorderRadius
+                                                                      .circular(
+                                                                          10),
+                                                            ),
+                                                            child: const Center(
+                                                              child: Text(
+                                                                'Pay with UPI',
+                                                                style:
+                                                                    TextStyle(
+                                                                  color: Colors
+                                                                      .white,
+                                                                  fontSize: 16,
+                                                                  fontFamily:
+                                                                      'Gotham',
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w300,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ),
+                                                  actions: [
+                                                    Center(
+                                                      child: TextButton(
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                        child: const Text(
+                                                            'Cancel'),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: Container(
+                                            width: double.infinity,
+                                            height: 50,
+                                            decoration: BoxDecoration(
+                                              color: const Color(0xFFFF6900),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
                                             ),
-                                            content: SizedBox(
-                                              height: 160,
-                                              child: Column(
-                                                children: [
-                                                  //gesture detector for payment options
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      //pop
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      //show snackabr for payment success
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                          content: Center(
-                                                            child: Text(
-                                                                'Payment Successful'),
-                                                          ),
-                                                          backgroundColor:
-                                                              Color(0xFFFF6900),
-                                                        ),
-                                                      );
-                                                      //get duedate from firebase and add 28 days to duedate and add to firebase
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'userdata')
-                                                          .doc(email)
-                                                          .update({
-                                                        'duedate': snapshot
-                                                            .data!
-                                                            .docs[0]['duedate']
-                                                            .toDate()
-                                                            .add(const Duration(
-                                                                days: 28))
-                                                      });
-                                                      //add due amount and todays date as timestamp to subcollection history in firebase
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'userdata')
-                                                          .doc(email)
-                                                          .collection('history')
-                                                          .add({
-                                                        'amount': snapshot.data!
-                                                            .docs[0]['due'],
-                                                        'date': Timestamp.now()
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      width: double.infinity,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                            0xFFFF6900),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: const Center(
-                                                        child: Text(
-                                                          'GooglePay',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontFamily:
-                                                                'Gotham',
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      //pop
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      //show snackabr for payment success
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                          content: Center(
-                                                            child: Text(
-                                                                'Payment Successful'),
-                                                          ),
-                                                          backgroundColor:
-                                                              Color(0xFFFF6900),
-                                                        ),
-                                                      );
-                                                      //get duedate from firebase and add 28 days to duedate and add to firebase
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'userdata')
-                                                          .doc(email)
-                                                          .update({
-                                                        'duedate': snapshot
-                                                            .data!
-                                                            .docs[0]['duedate']
-                                                            .toDate()
-                                                            .add(const Duration(
-                                                                days: 28))
-                                                      });
-                                                      //add due amount and todays date as timestamp to subcollection history in firebase
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'userdata')
-                                                          .doc(email)
-                                                          .collection('history')
-                                                          .add({
-                                                        'amount': snapshot.data!
-                                                            .docs[0]['due'],
-                                                        'date': Timestamp.now()
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      width: double.infinity,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                            0xFFFF6900),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: const Center(
-                                                        child: Text(
-                                                          'Paytm',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontFamily:
-                                                                'Gotham',
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  const SizedBox(
-                                                    height: 5,
-                                                  ),
-                                                  GestureDetector(
-                                                    onTap: () {
-                                                      //pop
-                                                      Navigator.of(context)
-                                                          .pop();
-                                                      //show snackabr for payment success
-                                                      ScaffoldMessenger.of(
-                                                              context)
-                                                          .showSnackBar(
-                                                        const SnackBar(
-                                                          content: Center(
-                                                            child: Text(
-                                                                'Payment Successful'),
-                                                          ),
-                                                          backgroundColor:
-                                                              Color(0xFFFF6900),
-                                                        ),
-                                                      );
-                                                      //get duedate from firebase and add 28 days to duedate and add to firebase
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'userdata')
-                                                          .doc(email)
-                                                          .update({
-                                                        'duedate': snapshot
-                                                            .data!
-                                                            .docs[0]['duedate']
-                                                            .toDate()
-                                                            .add(const Duration(
-                                                                days: 28))
-                                                      });
-                                                      //add due amount and todays date as timestamp to subcollection history in firebase
-                                                      FirebaseFirestore.instance
-                                                          .collection(
-                                                              'userdata')
-                                                          .doc(email)
-                                                          .collection('history')
-                                                          .add({
-                                                        'amount': snapshot.data!
-                                                            .docs[0]['due'],
-                                                        'date': Timestamp.now()
-                                                      });
-                                                    },
-                                                    child: Container(
-                                                      width: double.infinity,
-                                                      height: 50,
-                                                      decoration: BoxDecoration(
-                                                        color: const Color(
-                                                            0xFFFF6900),
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(10),
-                                                      ),
-                                                      child: const Center(
-                                                        child: Text(
-                                                          'Pay with UPI',
-                                                          style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 16,
-                                                            fontFamily:
-                                                                'Gotham',
-                                                            fontWeight:
-                                                                FontWeight.w300,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            actions: [
-                                              Center(
-                                                child: TextButton(
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                  child: const Text('Cancel'),
+                                            child: const Center(
+                                              child: Text(
+                                                'Pay Now',
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontFamily: 'Gotham',
+                                                  fontWeight: FontWeight.w300,
                                                 ),
                                               ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
-                                      width: double.infinity,
-                                      height: 50,
-                                      decoration: BoxDecoration(
-                                        color: const Color(0xFFFF6900),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Center(
-                                        child: Text(
-                                          'Pay Now',
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 16,
-                                            fontFamily: 'Gotham',
-                                            fontWeight: FontWeight.w300,
+                                            ),
                                           ),
                                         ),
+                                      )
+                                    : const SizedBox(
+                                        height: 0,
                                       ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  height: 20,
-                                )
+                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                    ? const SizedBox(
+                                        height: 20,
+                                      )
+                                    : const SizedBox(
+                                        height: 0,
+                                      ),
                               ],
                             )
                           : const Center(child: Text('No data')),

@@ -329,11 +329,12 @@ class _SignUpState extends State<SignUp> {
                                   .set({
                                 'name': fullNameController.text,
                                 'due': 0,
+                                'duedate': 'NULL'
                               });
 
                               //navigate to pan page
-                              Navigator.push(
-                                  context, SlideRightRoute(page: AddPan()));
+                              Navigator.push(context,
+                                  SlideRightRoute(page: const AddPan()));
                             }).catchError((e) {
                               //show snackbar
                               ScaffoldMessenger.of(context).showSnackBar(

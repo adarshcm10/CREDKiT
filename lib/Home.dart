@@ -190,7 +190,9 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            '${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).day}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).month}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).year}',
+                            snapshot.data!['duedate'] != 'NULL'
+                                ? '${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).day}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).month}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).year}'
+                                : 'No due left',
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.white,
