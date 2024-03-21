@@ -164,6 +164,30 @@ class _DuePageState extends State<DuePage> {
                                                               Color(0xFFFF6900),
                                                         ),
                                                       );
+                                                      //get duedate from firebase and add 28 days to duedate and add to firebase
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'userdata')
+                                                          .doc(email)
+                                                          .update({
+                                                        'duedate': snapshot
+                                                            .data!
+                                                            .docs[0]['duedate']
+                                                            .toDate()
+                                                            .add(const Duration(
+                                                                days: 28))
+                                                      });
+                                                      //add due amount and todays date as timestamp to subcollection history in firebase
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'userdata')
+                                                          .doc(email)
+                                                          .collection('history')
+                                                          .add({
+                                                        'amount': snapshot.data!
+                                                            .docs[0]['due'],
+                                                        'date': Timestamp.now()
+                                                      });
                                                     },
                                                     child: Container(
                                                       width: double.infinity,
@@ -195,7 +219,46 @@ class _DuePageState extends State<DuePage> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      //redirect to payment gateway
+                                                      //pop
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      //show snackabr for payment success
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Center(
+                                                            child: Text(
+                                                                'Payment Successful'),
+                                                          ),
+                                                          backgroundColor:
+                                                              Color(0xFFFF6900),
+                                                        ),
+                                                      );
+                                                      //get duedate from firebase and add 28 days to duedate and add to firebase
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'userdata')
+                                                          .doc(email)
+                                                          .update({
+                                                        'duedate': snapshot
+                                                            .data!
+                                                            .docs[0]['duedate']
+                                                            .toDate()
+                                                            .add(const Duration(
+                                                                days: 28))
+                                                      });
+                                                      //add due amount and todays date as timestamp to subcollection history in firebase
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'userdata')
+                                                          .doc(email)
+                                                          .collection('history')
+                                                          .add({
+                                                        'amount': snapshot.data!
+                                                            .docs[0]['due'],
+                                                        'date': Timestamp.now()
+                                                      });
                                                     },
                                                     child: Container(
                                                       width: double.infinity,
@@ -227,7 +290,46 @@ class _DuePageState extends State<DuePage> {
                                                   ),
                                                   GestureDetector(
                                                     onTap: () {
-                                                      //redirect to payment gateway
+                                                      //pop
+                                                      Navigator.of(context)
+                                                          .pop();
+                                                      //show snackabr for payment success
+                                                      ScaffoldMessenger.of(
+                                                              context)
+                                                          .showSnackBar(
+                                                        const SnackBar(
+                                                          content: Center(
+                                                            child: Text(
+                                                                'Payment Successful'),
+                                                          ),
+                                                          backgroundColor:
+                                                              Color(0xFFFF6900),
+                                                        ),
+                                                      );
+                                                      //get duedate from firebase and add 28 days to duedate and add to firebase
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'userdata')
+                                                          .doc(email)
+                                                          .update({
+                                                        'duedate': snapshot
+                                                            .data!
+                                                            .docs[0]['duedate']
+                                                            .toDate()
+                                                            .add(const Duration(
+                                                                days: 28))
+                                                      });
+                                                      //add due amount and todays date as timestamp to subcollection history in firebase
+                                                      FirebaseFirestore.instance
+                                                          .collection(
+                                                              'userdata')
+                                                          .doc(email)
+                                                          .collection('history')
+                                                          .add({
+                                                        'amount': snapshot.data!
+                                                            .docs[0]['due'],
+                                                        'date': Timestamp.now()
+                                                      });
                                                     },
                                                     child: Container(
                                                       width: double.infinity,
@@ -301,7 +403,7 @@ class _DuePageState extends State<DuePage> {
                     ));
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 30,
             ),
             const Padding(
@@ -318,7 +420,7 @@ class _DuePageState extends State<DuePage> {
                 ],
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             //display amount and date from collection userdata , document email and subcollection history
@@ -380,7 +482,8 @@ class _DuePageState extends State<DuePage> {
                                         locale: 'en_IN',
                                         symbol: '₹',
                                         decimalDigits: 0,
-                                      ).format(int.parse(data['amount'])),
+                                      ).format(
+                                          int.parse(data['amount'].toString())),
                                       style: const TextStyle(
                                         color: Color(0xFFFF6900),
                                         fontSize: 16,
