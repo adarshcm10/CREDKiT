@@ -178,9 +178,9 @@ class _HomePageState extends State<HomePage> {
                             NumberFormat.currency(
                               locale: 'en_IN',
                               symbol: '₹',
-                              decimalDigits: 0,
+                              decimalDigits: 2,
                             ).format(
-                                int.parse(snapshot.data!['due'].toString())),
+                                double.parse(snapshot.data!['due'].toString())),
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Color(0xFFFF6900),
@@ -486,8 +486,9 @@ class _HomePageState extends State<HomePage> {
                                                       symbol: '₹',
                                                       decimalDigits: 0,
                                                     ).format(int.parse(snapshot
-                                                            .data!.docs[index]
-                                                        ['amount'])),
+                                                        .data!
+                                                        .docs[index]['amount']
+                                                        .toString())),
                                                     style: const TextStyle(
                                                       color: Color(0xFFFF6900),
                                                       fontSize: 19,
@@ -497,7 +498,7 @@ class _HomePageState extends State<HomePage> {
                                                     ),
                                                   ),
                                                   Text(
-                                                    '${snapshot.data!.docs[index]['duration']} months',
+                                                    '${snapshot.data!.docs[index]['duration'].toString()} months',
                                                     style: const TextStyle(
                                                       color: Colors.white,
                                                       fontSize: 13,
@@ -509,7 +510,7 @@ class _HomePageState extends State<HomePage> {
                                                 ],
                                               ),
                                               Text(
-                                                '@ ${snapshot.data!.docs[index]['pa']} % pa.',
+                                                '@ ${snapshot.data!.docs[index]['pa'].toString()} % pa.',
                                                 textAlign: TextAlign.right,
                                                 style: const TextStyle(
                                                   color: Color(0xFFFF6900),

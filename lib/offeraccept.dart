@@ -109,8 +109,9 @@ class _AcceptOfferState extends State<AcceptOffer> {
                               NumberFormat.currency(
                                 locale: 'en_IN',
                                 symbol: '₹',
-                                decimalDigits: 0,
-                              ).format(int.parse(snapshot.data!['amount'])),
+                                decimalDigits: 3,
+                              ).format(double.parse(
+                                  snapshot.data!['amount'].toString())),
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 color: Color(0xFFFF6900),
@@ -123,7 +124,7 @@ class _AcceptOfferState extends State<AcceptOffer> {
                               height: 10,
                             ),
                             Text(
-                              'For ${snapshot.data!['duration']} months duration',
+                              'For ${snapshot.data!['duration'].toString()} months duration',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -135,7 +136,7 @@ class _AcceptOfferState extends State<AcceptOffer> {
                               height: 10,
                             ),
                             Text(
-                              'With interest rate ${snapshot.data!['pa']}% pa.',
+                              'With interest rate ${snapshot.data!['pa'].toString()}% pa.',
                               style: const TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
@@ -179,7 +180,38 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                   );
                                 },
                               );
-                            } else {}
+                            } else {
+                              double interest = snapshot.data!['amount'] *
+                                  (snapshot.data!['pa'] / 100);
+                              double monthly =
+                                  (interest / 12) * snapshot.data!['duration'];
+                              double total = snapshot.data!['amount'] + monthly;
+                              double due = total / snapshot.data!['duration'];
+                              //convert due into integer of 2 decimal places
+                              due = double.parse(due.toStringAsFixed(2));
+                              int days = snapshot.data!['duration'] * 28;
+                              DateTime duedate =
+                                  DateTime.now().add(const Duration(days: 28));
+                              DateTime enddate =
+                                  DateTime.now().add(Duration(days: days));
+                              //pop
+                              Navigator.pop(context);
+                              //if value of due in collection userdata doc email is 0 update value of due in collection userdata doc email to amount
+                              FirebaseFirestore.instance
+                                  .collection('userdata')
+                                  .doc(email)
+                                  .update({
+                                'due': due,
+                                'duedate': duedate,
+                                'end': enddate
+                              });
+
+                              //delete document from collection offers
+                              FirebaseFirestore.instance
+                                  .collection('offers')
+                                  .doc(widget.docid)
+                                  .delete();
+                            }
                           });
                         },
                         child: Container(

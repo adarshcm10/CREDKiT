@@ -113,8 +113,8 @@ class _DuePageState extends State<DuePage> {
                                   NumberFormat.currency(
                                     locale: 'en_IN',
                                     symbol: '₹',
-                                    decimalDigits: 0,
-                                  ).format(int.parse(snapshot
+                                    decimalDigits: 2,
+                                  ).format(double.parse(snapshot
                                       .data!.docs[0]['due']
                                       .toString())),
                                   textAlign: TextAlign.center,
@@ -671,9 +671,9 @@ class _DuePageState extends State<DuePage> {
                                       NumberFormat.currency(
                                         locale: 'en_IN',
                                         symbol: '₹',
-                                        decimalDigits: 0,
-                                      ).format(
-                                          int.parse(data['amount'].toString())),
+                                        decimalDigits: 2,
+                                      ).format(double.parse(
+                                          data['amount'].toString())),
                                       style: const TextStyle(
                                         color: Color(0xFFFF6900),
                                         fontSize: 16,
