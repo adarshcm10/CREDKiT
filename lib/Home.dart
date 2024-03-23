@@ -123,13 +123,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  return const Text(
-                    'Loading...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontFamily: 'Gotham',
-                      fontWeight: FontWeight.w300,
+                  return const Center(
+                    child: Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 19,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   );
                 }
@@ -215,13 +217,15 @@ class _HomePageState extends State<HomePage> {
                         ],
                       );
                     } else {
-                      return const Text(
-                        'Loading...',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 19,
-                          fontFamily: 'Gotham',
-                          fontWeight: FontWeight.w300,
+                      return const Center(
+                        child: Text(
+                          'Loading...',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 19,
+                            fontFamily: 'Gotham',
+                            fontWeight: FontWeight.w300,
+                          ),
                         ),
                       );
                     }
@@ -400,13 +404,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                   );
                 } else {
-                  return const Text(
-                    'Loading...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontFamily: 'Gotham',
-                      fontWeight: FontWeight.w300,
+                  return const Center(
+                    child: Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 19,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   );
                 }
@@ -589,13 +595,15 @@ class _HomePageState extends State<HomePage> {
                           ),
                         );
                 } else {
-                  return const Text(
-                    'Loading...',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 19,
-                      fontFamily: 'Gotham',
-                      fontWeight: FontWeight.w300,
+                  return const Center(
+                    child: Text(
+                      'Loading...',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 19,
+                        fontFamily: 'Gotham',
+                        fontWeight: FontWeight.w300,
+                      ),
                     ),
                   );
                 }
