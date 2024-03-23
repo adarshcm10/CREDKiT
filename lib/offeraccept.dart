@@ -1,5 +1,7 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 //import cloud_firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,6 +19,17 @@ class AcceptOffer extends StatefulWidget {
 
 class _AcceptOfferState extends State<AcceptOffer> {
   final String email = FirebaseAuth.instance.currentUser!.email.toString();
+
+  //function returns a string which is 32 characters long and contains numbers, alphabets and start with 0x
+  String randomString() {
+    const chars = '0123456789abcdef';
+    final random = Random.secure();
+    final result =
+        List.generate(30, (index) => chars[random.nextInt(chars.length)])
+            .join();
+    return '0x$result';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -196,6 +209,19 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                   DateTime.now().add(Duration(days: days));
                               //pop
                               Navigator.pop(context);
+
+                              String txid = randomString();
+
+                              //save amount, email and datetime.now to collection blockchain as new doc
+                              FirebaseFirestore.instance
+                                  .collection('blockchain')
+                                  .add({
+                                'amount': snapshot.data!['amount'],
+                                'email': email,
+                                'date': DateTime.now(),
+                                'tx': txid,
+                              });
+
                               //if value of due in collection userdata doc email is 0 update value of due in collection userdata doc email to amount
                               FirebaseFirestore.instance
                                   .collection('userdata')
