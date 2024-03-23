@@ -86,7 +86,9 @@ class _DuePageState extends State<DuePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                (snapshot.data!.docs[0].data()
+                                            as Map<String, dynamic>)
+                                        .containsKey('duedate')
                                     ? const SizedBox(
                                         height: 20,
                                       )
@@ -94,7 +96,9 @@ class _DuePageState extends State<DuePage> {
                                         height: 20,
                                       ),
                                 Text(
-                                  snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                  (snapshot.data!.docs[0].data()
+                                              as Map<String, dynamic>)
+                                          .containsKey('duedate')
                                       ? '${snapshot.data!.docs[0]['duedate'].toDate().difference(DateTime.now()).inDays} days left for the due of'
                                       : 'You have no dues left',
                                   style: const TextStyle(
@@ -121,7 +125,9 @@ class _DuePageState extends State<DuePage> {
                                     fontWeight: FontWeight.w700,
                                   ),
                                 ),
-                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                (snapshot.data!.docs[0].data()
+                                            as Map<String, dynamic>)
+                                        .containsKey('duedate')
                                     ? Text(
                                         'On ${DateFormat('dd-MM-yyyy').format(snapshot.data!.docs[0]['duedate'].toDate())}',
                                         style: const TextStyle(
@@ -136,7 +142,9 @@ class _DuePageState extends State<DuePage> {
                                       ),
 
                                 //pay now button
-                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                (snapshot.data!.docs[0].data()
+                                            as Map<String, dynamic>)
+                                        .containsKey('duedate')
                                     ? Padding(
                                         padding: const EdgeInsets.only(
                                             left: 30, right: 30),
@@ -205,9 +213,18 @@ class _DuePageState extends State<DuePage> {
                                                                         'userdata')
                                                                     .doc(email)
                                                                     .update({
-                                                                  'duedate':
-                                                                      'NULL',
                                                                   'due': 0,
+                                                                });
+                                                                //delete field duedate
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      FieldValue
+                                                                          .delete(),
                                                                 });
                                                               } else {
                                                                 FirebaseFirestore
@@ -320,9 +337,18 @@ class _DuePageState extends State<DuePage> {
                                                                         'userdata')
                                                                     .doc(email)
                                                                     .update({
-                                                                  'duedate':
-                                                                      'NULL',
                                                                   'due': 0,
+                                                                });
+                                                                //delete field duedate
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      FieldValue
+                                                                          .delete(),
                                                                 });
                                                               } else {
                                                                 FirebaseFirestore
@@ -435,9 +461,18 @@ class _DuePageState extends State<DuePage> {
                                                                         'userdata')
                                                                     .doc(email)
                                                                     .update({
-                                                                  'duedate':
-                                                                      'NULL',
                                                                   'due': 0,
+                                                                });
+                                                                //delete field duedate
+                                                                FirebaseFirestore
+                                                                    .instance
+                                                                    .collection(
+                                                                        'userdata')
+                                                                    .doc(email)
+                                                                    .update({
+                                                                  'duedate':
+                                                                      FieldValue
+                                                                          .delete(),
                                                                 });
                                                               } else {
                                                                 FirebaseFirestore
@@ -543,7 +578,9 @@ class _DuePageState extends State<DuePage> {
                                     : const SizedBox(
                                         height: 0,
                                       ),
-                                snapshot.data!.docs[0]['duedate'] != 'NULL'
+                                (snapshot.data!.docs[0].data()
+                                            as Map<String, dynamic>)
+                                        .containsKey('duedate')
                                     ? const SizedBox(
                                         height: 20,
                                       )

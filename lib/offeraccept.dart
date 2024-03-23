@@ -3,6 +3,8 @@
 import 'package:flutter/material.dart';
 //import cloud_firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
+//import firebase_auth
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
 
 class AcceptOffer extends StatefulWidget {
@@ -14,6 +16,7 @@ class AcceptOffer extends StatefulWidget {
 }
 
 class _AcceptOfferState extends State<AcceptOffer> {
+  final String email = FirebaseAuth.instance.currentUser!.email.toString();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -150,7 +153,35 @@ class _AcceptOfferState extends State<AcceptOffer> {
                         height: 30,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          //if value of due in collection userdata doc email is not 0 display alert dialog cant accept offer
+                          FirebaseFirestore.instance
+                              .collection('userdata')
+                              .doc(email)
+                              .get()
+                              .then((DocumentSnapshot documentSnapshot) {
+                            if (documentSnapshot['due'] != 0) {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Cannot accept offer'),
+                                    content: const Text(
+                                        'You have an outstanding due. Please clear it before accepting a new offer.'),
+                                    actions: <Widget>[
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                        child: const Text('OK'),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            } else {}
+                          });
+                        },
                         child: Container(
                           width: double.infinity,
                           height: 50,

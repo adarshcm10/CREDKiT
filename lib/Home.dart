@@ -190,7 +190,8 @@ class _HomePageState extends State<HomePage> {
                             ),
                           ),
                           Text(
-                            snapshot.data!['duedate'] != 'NULL'
+                            (snapshot.data!.data() as Map<String, dynamic>)
+                                    .containsKey('duedate')
                                 ? '${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).day}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).month}/${DateTime.parse(snapshot.data!['duedate'].toDate().toString()).year}'
                                 : 'No due left',
                             textAlign: TextAlign.center,
