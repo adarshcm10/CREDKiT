@@ -322,6 +322,9 @@ class _SignUpState extends State<SignUp> {
                                     email: emailController.text,
                                     password: passwordController.text)
                                 .then((value) async {
+                              //get device token
+                              String? deviceToken =
+                                  await FirebaseMessaging.instance.getToken();
                               //add fullname to collection 'userdata' to doc email address of user to firestore
                               await FirebaseFirestore.instance
                                   .collection('userdata')
@@ -329,7 +332,8 @@ class _SignUpState extends State<SignUp> {
                                   .set({
                                 'name': fullNameController.text,
                                 'due': 0,
-                                'duedate': 'NULL'
+                                'duedate': 'NULL',
+                                'token': deviceToken,
                               });
 
                               //navigate to pan page

@@ -239,12 +239,21 @@ class _SignInState extends State<SignIn> {
                             ),
                           );
                         } else {
+                          String? deviceToken =
+                              await FirebaseMessaging.instance.getToken();
                           //sign in the user using firebase_auth
                           FirebaseAuth.instance
                               .signInWithEmailAndPassword(
                                   email: _usernameController.text,
                                   password: _passwordController.text)
                               .then((value) {
+                                //save device token to firestore without overwriting
+                            await FirebaseFirestore.instance
+                                .collection('userdata')
+                                .doc(_usernameController.text)
+                                .set({
+                              'token': deviceToken,
+                            }, SetOptions(merge: true));
                             //navigate to home screen using fade transition
                             Navigator.pushReplacement(
                                 context, FadeRoute(page: const SpalshScreen()));
