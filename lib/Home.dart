@@ -452,8 +452,9 @@ class _HomePageState extends State<HomePage> {
                                                 locale: 'en_IN',
                                                 symbol: '₹',
                                                 decimalDigits: 0,
-                                              ).format(int.parse(
-                                                  snapshot.data!['amount'])),
+                                              ).format(int.parse(snapshot
+                                                  .data!['amount']
+                                                  .toString())),
                                               style: const TextStyle(
                                                 color: Color(0xFFFF6900),
                                                 fontSize: 19,

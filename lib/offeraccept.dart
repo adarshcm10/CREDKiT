@@ -9,8 +9,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
-//firebase messaging
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:http/http.dart' as http;
 
 class AcceptOffer extends StatefulWidget {
