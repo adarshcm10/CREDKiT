@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+import 'dart:convert';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
@@ -8,6 +9,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:intl/intl.dart';
+//firebase messaging
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:http/http.dart' as http;
 
 class AcceptOffer extends StatefulWidget {
   String docid;
@@ -28,6 +32,33 @@ class _AcceptOfferState extends State<AcceptOffer> {
         List.generate(30, (index) => chars[random.nextInt(chars.length)])
             .join();
     return '0x$result';
+  }
+
+  Future<void> sendNotification(String serverKey, List<String> deviceTokens,
+      String title, String body) async {
+    const postUrl = 'https://fcm.googleapis.com/fcm/send';
+
+    final data = {
+      "registration_ids": deviceTokens,
+      "notification": {"body": body, "title": title}
+    };
+
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization': 'key=$serverKey'
+    };
+
+    var response = await http.post(Uri.parse(postUrl),
+        body: json.encode(data), headers: headers);
+
+    if (response.statusCode == 200) {
+      const SnackBar(
+        content: AlertDialog(
+          title: Text("Notification send"),
+          backgroundColor: Color(0xffE31E26),
+        ),
+      );
+    }
   }
 
   @override
@@ -122,7 +153,7 @@ class _AcceptOfferState extends State<AcceptOffer> {
                               NumberFormat.currency(
                                 locale: 'en_IN',
                                 symbol: '₹',
-                                decimalDigits: 3,
+                                decimalDigits: 0,
                               ).format(double.parse(
                                   snapshot.data!['amount'].toString())),
                               textAlign: TextAlign.center,
@@ -222,10 +253,36 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                 'tx': txid,
                               });
 
-                              //if value of due in collection userdata doc email is 0 update value of due in collection userdata doc email to amount
+                              //update due, duedate and enddate in collection userdata doc email
                               FirebaseFirestore.instance
                                   .collection('userdata')
                                   .doc(email)
+                                  .update({
+                                'due': due,
+                                'duedate': duedate,
+                                'end': enddate
+                              });
+
+                              //get device token from collection userdata doc email
+                              FirebaseFirestore.instance
+                                  .collection('userdata')
+                                  .doc(widget.docid)
+                                  .get()
+                                  .then((DocumentSnapshot documentSnapshot) {
+                                String did = documentSnapshot['token'];
+                                //send notification to device token
+                                sendNotification(
+                                  'AAAAWQ5e930:APA91bETjSgvHLzc-uP45fFIgN-0f7KuDnTW9ckft98Zgq5HVk3AKOUHtbIeCnmwWlxTrTULuJHIKWdEwvn4-YKYyCWLe0r1XiOD82JswnhwrfiIaCdUTSA22d1KVf6guAZblLQhhfG5',
+                                  [did],
+                                  'Offer accepted',
+                                  'Your offer has been accepted',
+                                );
+                              });
+
+                              //save due and duedate to collection userdata and doc widget.docid
+                              FirebaseFirestore.instance
+                                  .collection('userdata')
+                                  .doc(widget.docid)
                                   .update({
                                 'due': due,
                                 'duedate': duedate,
@@ -238,6 +295,12 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                   .doc(widget.docid)
                                   .delete();
                             }
+                            //snackbar to show offer accepted
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Offer accepted'),
+                              ),
+                            );
                           });
                         },
                         child: Container(
