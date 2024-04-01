@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:credkit/Home.dart';
 import 'package:credkit/signup.dart';
 import 'package:credkit/transitions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
@@ -194,7 +196,7 @@ class _SignInState extends State<SignIn> {
                 Padding(
                   padding: const EdgeInsets.only(top: 20, right: 30, left: 30),
                   child: GestureDetector(
-                    onTap: () {
+                    onTap: () async {
                       //check if any of the fields are empty
                       if (_usernameController.text.isEmpty ||
                           _passwordController.text.isEmpty) {
@@ -246,8 +248,8 @@ class _SignInState extends State<SignIn> {
                               .signInWithEmailAndPassword(
                                   email: _usernameController.text,
                                   password: _passwordController.text)
-                              .then((value) {
-                                //save device token to firestore without overwriting
+                              .then((value) async {
+                            //save device token to firestore without overwriting
                             await FirebaseFirestore.instance
                                 .collection('userdata')
                                 .doc(_usernameController.text)

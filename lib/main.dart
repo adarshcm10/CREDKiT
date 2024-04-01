@@ -1,5 +1,6 @@
 import 'package:credkit/firebase_options.dart';
 import 'package:credkit/spalsh.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 //import firebase_core
 import 'package:firebase_core/firebase_core.dart';

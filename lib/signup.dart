@@ -3,6 +3,7 @@
 import 'package:credkit/pan.dart';
 import 'package:credkit/signin.dart';
 import 'package:credkit/transitions.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 //import firebase_auth
 import 'package:firebase_auth/firebase_auth.dart';
