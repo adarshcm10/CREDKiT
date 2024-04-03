@@ -6,13 +6,11 @@ import 'package:credkit/offeraccept.dart';
 import 'package:credkit/profile.dart';
 import 'package:credkit/requests.dart';
 import 'package:credkit/transitions.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 //firebase auth
 import 'package:firebase_auth/firebase_auth.dart';
 //firestore
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {

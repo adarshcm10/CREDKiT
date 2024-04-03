@@ -333,7 +333,6 @@ class _SignUpState extends State<SignUp> {
                                   .set({
                                 'name': fullNameController.text,
                                 'due': 0,
-                                'duedate': 'NULL',
                                 'token': deviceToken,
                               });
 
