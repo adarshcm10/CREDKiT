@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:credkit/Home.dart';
 import 'package:credkit/addRequest.dart';
@@ -7,6 +9,7 @@ import 'package:credkit/transitions.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
 
 class DuePage extends StatefulWidget {
   const DuePage({super.key});
@@ -17,6 +20,34 @@ class DuePage extends StatefulWidget {
 
 class _DuePageState extends State<DuePage> {
   final String email = FirebaseAuth.instance.currentUser!.email.toString();
+
+  Future<void> sendNotification(String serverKey, List<String> deviceTokens,
+      String title, String body) async {
+    const postUrl = 'https://fcm.googleapis.com/fcm/send';
+
+    final data = {
+      "registration_ids": deviceTokens,
+      "notification": {"body": body, "title": title}
+    };
+
+    final headers = {
+      'content-type': 'application/json',
+      'Authorization': 'key=$serverKey'
+    };
+
+    var response = await http.post(Uri.parse(postUrl),
+        body: json.encode(data), headers: headers);
+
+    if (response.statusCode == 200) {
+      const SnackBar(
+        content: AlertDialog(
+          title: Text("Notification send"),
+          backgroundColor: Color(0xffE31E26),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -231,556 +262,298 @@ class _DuePageState extends State<DuePage> {
             const SizedBox(
               height: 30,
             ),
-            StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('userdata')
-                  .where(email)
-                  .snapshots(),
-              builder: (BuildContext context,
-                  AsyncSnapshot<QuerySnapshot> snapshot) {
-                if (snapshot.hasError) {
-                  return const Text('Something went wrong');
-                }
-
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const //circulat progress indicator
-                      Center(
-                    child: Text(
-                      'Loading...',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 19,
-                        fontFamily: 'Gotham',
-                        fontWeight: FontWeight.w300,
-                      ),
+            Padding(
+                padding: const EdgeInsets.only(left: 30, right: 30),
+                child: Container(
+                  width: double.infinity,
+                  //height: 131,
+                  decoration: ShapeDecoration(
+                    shape: RoundedRectangleBorder(
+                      side:
+                          const BorderSide(width: 2, color: Color(0xFFFFDABF)),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                  );
-                }
-
-                return Padding(
-                    padding: const EdgeInsets.only(left: 30, right: 30),
-                    child: Container(
-                      width: double.infinity,
-                      //height: 131,
-                      decoration: ShapeDecoration(
-                        shape: RoundedRectangleBorder(
-                          side: const BorderSide(
-                              width: 2, color: Color(0xFFFFDABF)),
-                          borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      const Text(
+                        'Upcoming',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontFamily: 'Gotham',
+                          fontWeight: FontWeight.w300,
+                          height: 0.09,
                         ),
                       ),
-                      child: snapshot.data!.docs.isNotEmpty
-                          ? Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                (snapshot.data!.docs[0].data()
-                                            as Map<String, dynamic>)
-                                        .containsKey('duedate')
-                                    ? const SizedBox(
-                                        height: 20,
-                                      )
-                                    : const SizedBox(
-                                        height: 20,
-                                      ),
-                                Text(
-                                  (snapshot.data!.docs[0].data()
-                                              as Map<String, dynamic>)
-                                          .containsKey('duedate')
-                                      ? '${snapshot.data!.docs[0]['duedate'].toDate().difference(DateTime.now()).inDays} days left for the due of'
-                                      : 'You have no dues left',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                    fontFamily: 'Gotham',
-                                    fontWeight: FontWeight.w300,
-                                  ),
-                                ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //display 'due' from collection userdata , document email
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('userdata')
+                            .doc(email)
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<DocumentSnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return const Text('Something went wrong');
+                          }
 
-                                Text(
-                                  NumberFormat.currency(
-                                    locale: 'en_IN',
-                                    symbol: '₹',
-                                    decimalDigits: 2,
-                                  ).format(double.parse(snapshot
-                                      .data!.docs[0]['due']
-                                      .toString())),
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Color(0xFFFF6900),
-                                    fontSize: 33,
-                                    fontFamily: 'Gotham',
-                                    fontWeight: FontWeight.w700,
-                                  ),
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: Text(
+                                'Loading...',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 19,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
                                 ),
-                                (snapshot.data!.docs[0].data()
-                                            as Map<String, dynamic>)
-                                        .containsKey('duedate')
-                                    ? Text(
-                                        'On ${DateFormat('dd-MM-yyyy').format(snapshot.data!.docs[0]['duedate'].toDate())}',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontFamily: 'Gotham',
-                                          fontWeight: FontWeight.w300,
+                              ),
+                            );
+                          }
+
+                          return Column(
+                            children: [
+                              Text(
+                                NumberFormat.currency(
+                                  locale: 'en_IN',
+                                  symbol: '₹',
+                                  decimalDigits: 2,
+                                ).format(double.parse(
+                                    snapshot.data!['due'].toString())),
+                                style: const TextStyle(
+                                  color: const Color(0xFFFF6900),
+                                  fontSize: 40,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w700,
+                                ),
+                              ),
+
+                              //if there is field 'duedate', display it as dd-mm-yyyy format else 'no dues left'
+                              snapshot.data!['due'] != 0
+                                  ? Text(
+                                      'on ${DateFormat('dd-MM-yyyy').format(snapshot.data!['duedate'].toDate())}',
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Gotham',
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    )
+                                  : const Text(
+                                      'No dues left',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: 'Gotham',
+                                        fontWeight: FontWeight.w300,
+                                      ),
+                                    ),
+                            ],
+                          );
+                        },
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      //gesture detector for pay due if due is not 0
+                      StreamBuilder<DocumentSnapshot>(
+                        stream: FirebaseFirestore.instance
+                            .collection('userdata')
+                            .doc(email)
+                            .snapshots(),
+                        builder: (BuildContext context,
+                            AsyncSnapshot<DocumentSnapshot> snapshot) {
+                          if (snapshot.hasError) {
+                            return const Text('Something went wrong');
+                          }
+
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                              child: Text(
+                                'Loading...',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 19,
+                                  fontFamily: 'Gotham',
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            );
+                          }
+
+                          return snapshot.data!['due'] != 0
+                              ? GestureDetector(
+                                  onTap: () {
+                                    //pop
+                                    Navigator.of(context).pop();
+                                    //show snackabr for payment success
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Center(
+                                          child: Text('Payment Successful'),
                                         ),
-                                      )
-                                    : const SizedBox(
-                                        height: 0,
+                                        backgroundColor: Color(0xFFFF6900),
                                       ),
+                                    );
+                                    //get duedate from firebase and add 28 days to duedate and add to firebase
+                                    DateTime duedate =
+                                        snapshot.data!['duedate'].toDate();
+                                    duedate =
+                                        duedate.add(const Duration(days: 28));
+                                    FirebaseFirestore.instance
+                                        .collection('userdata')
+                                        .doc(email)
+                                        .get()
+                                        .then((doc) {
+                                      var endDate = doc.data()!['end'].toDate();
+                                      if (!duedate.isAfter(endDate)) {
+                                        FirebaseFirestore.instance
+                                            .collection('userdata')
+                                            .doc(email)
+                                            .update({'duedate': duedate});
+                                        //update duedate in doc with value in lender field of doc email
+                                        FirebaseFirestore.instance
+                                            .collection('userdata')
+                                            .doc(email)
+                                            .get()
+                                            .then((DocumentSnapshot
+                                                documentSnapshot) {
+                                          String lender =
+                                              documentSnapshot['lender'];
+                                          FirebaseFirestore.instance
+                                              .collection('userdata')
+                                              .doc(lender)
+                                              .update({'duedate': duedate});
+                                        });
+                                      } else {
+                                        //delete duedate
+                                        FirebaseFirestore.instance
+                                            .collection('userdata')
+                                            .doc(email)
+                                            .update({
+                                          'duedate': FieldValue.delete()
+                                        });
+                                        //set due to 0
+                                        FirebaseFirestore.instance
+                                            .collection('userdata')
+                                            .doc(email)
+                                            .update({'due': 0});
+                                        //set due to 0 in doc with value in lender field of doc email
+                                        FirebaseFirestore.instance
+                                            .collection('userdata')
+                                            .doc(email)
+                                            .get()
+                                            .then((DocumentSnapshot
+                                                documentSnapshot) {
+                                          String lender =
+                                              documentSnapshot['lender'];
+                                          FirebaseFirestore.instance
+                                              .collection('userdata')
+                                              .doc(lender)
+                                              .update({'due': 0});
+                                        });
+                                      }
+                                    });
 
-                                //pay now button
-                                (snapshot.data!.docs[0].data()
-                                            as Map<String, dynamic>)
-                                        .containsKey('duedate')
-                                    ? Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 30, right: 30),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            //show dialogue
-                                            showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) {
-                                                return AlertDialog(
-                                                  title: const Text(
-                                                    'Payment Methods',
-                                                    style:
-                                                        TextStyle(fontSize: 16),
-                                                  ),
-                                                  content: SizedBox(
-                                                    height: 160,
-                                                    child: Column(
-                                                      children: [
-                                                        //gesture detector for payment options
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            //pop
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            //show snackabr for payment success
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Center(
-                                                                  child: Text(
-                                                                      'Payment Successful'),
-                                                                ),
-                                                                backgroundColor:
-                                                                    Color(
-                                                                        0xFFFF6900),
-                                                              ),
-                                                            );
-                                                            //get duedate from firebase and add 28 days to duedate and add to firebase
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'userdata')
-                                                                .doc(email)
-                                                                .get()
-                                                                .then((doc) {
-                                                              var newDueDate = snapshot
-                                                                  .data!
-                                                                  .docs[0][
-                                                                      'duedate']
-                                                                  .toDate()
-                                                                  .add(const Duration(
-                                                                      days:
-                                                                          28));
-                                                              if (doc
-                                                                  .data()![
-                                                                      'end']
-                                                                  .toDate()
-                                                                  .isBefore(
-                                                                      newDueDate)) {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'due': 0,
-                                                                });
-                                                                //delete field duedate
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'duedate':
-                                                                      FieldValue
-                                                                          .delete(),
-                                                                });
-                                                              } else {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'duedate':
-                                                                      newDueDate,
-                                                                });
-                                                              }
-                                                            });
-                                                            //add due amount and todays date as timestamp to subcollection history in firebase
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'userdata')
-                                                                .doc(email)
-                                                                .collection(
-                                                                    'history')
-                                                                .add({
-                                                              'amount': snapshot
-                                                                      .data!
-                                                                      .docs[0]
-                                                                  ['due'],
-                                                              'date': Timestamp
-                                                                  .now()
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            width:
-                                                                double.infinity,
-                                                            height: 50,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: const Color(
-                                                                  0xFFFF6900),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: const Center(
-                                                              child: Text(
-                                                                'GooglePay',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 16,
-                                                                  fontFamily:
-                                                                      'Gotham',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            //pop
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            //show snackabr for payment success
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Center(
-                                                                  child: Text(
-                                                                      'Payment Successful'),
-                                                                ),
-                                                                backgroundColor:
-                                                                    Color(
-                                                                        0xFFFF6900),
-                                                              ),
-                                                            );
-                                                            //get duedate from firebase and add 28 days to duedate and add to firebase
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'userdata')
-                                                                .doc(email)
-                                                                .get()
-                                                                .then((doc) {
-                                                              var newDueDate = snapshot
-                                                                  .data!
-                                                                  .docs[0][
-                                                                      'duedate']
-                                                                  .toDate()
-                                                                  .add(const Duration(
-                                                                      days:
-                                                                          28));
-                                                              if (doc
-                                                                  .data()![
-                                                                      'end']
-                                                                  .toDate()
-                                                                  .isBefore(
-                                                                      newDueDate)) {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'due': 0,
-                                                                });
-                                                                //delete field duedate
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'duedate':
-                                                                      FieldValue
-                                                                          .delete(),
-                                                                });
-                                                              } else {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'duedate':
-                                                                      newDueDate,
-                                                                });
-                                                              }
-                                                            });
-                                                            //add due amount and todays date as timestamp to subcollection history in firebase
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'userdata')
-                                                                .doc(email)
-                                                                .collection(
-                                                                    'history')
-                                                                .add({
-                                                              'amount': snapshot
-                                                                      .data!
-                                                                      .docs[0]
-                                                                  ['due'],
-                                                              'date': Timestamp
-                                                                  .now()
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            width:
-                                                                double.infinity,
-                                                            height: 50,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: const Color(
-                                                                  0xFFFF6900),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: const Center(
-                                                              child: Text(
-                                                                'Paytm',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 16,
-                                                                  fontFamily:
-                                                                      'Gotham',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        const SizedBox(
-                                                          height: 5,
-                                                        ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            //pop
-                                                            Navigator.of(
-                                                                    context)
-                                                                .pop();
-                                                            //show snackabr for payment success
-                                                            ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                content: Center(
-                                                                  child: Text(
-                                                                      'Payment Successful'),
-                                                                ),
-                                                                backgroundColor:
-                                                                    Color(
-                                                                        0xFFFF6900),
-                                                              ),
-                                                            );
-                                                            //get duedate from firebase and add 28 days to duedate and add to firebase
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'userdata')
-                                                                .doc(email)
-                                                                .get()
-                                                                .then((doc) {
-                                                              var newDueDate = snapshot
-                                                                  .data!
-                                                                  .docs[0][
-                                                                      'duedate']
-                                                                  .toDate()
-                                                                  .add(const Duration(
-                                                                      days:
-                                                                          28));
-                                                              if (doc
-                                                                  .data()![
-                                                                      'end']
-                                                                  .toDate()
-                                                                  .isBefore(
-                                                                      newDueDate)) {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'due': 0,
-                                                                });
-                                                                //delete field duedate
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'duedate':
-                                                                      FieldValue
-                                                                          .delete(),
-                                                                });
-                                                              } else {
-                                                                FirebaseFirestore
-                                                                    .instance
-                                                                    .collection(
-                                                                        'userdata')
-                                                                    .doc(email)
-                                                                    .update({
-                                                                  'duedate':
-                                                                      newDueDate,
-                                                                });
-                                                              }
-                                                            });
-                                                            //add due amount and todays date as timestamp to subcollection history in firebase
-                                                            FirebaseFirestore
-                                                                .instance
-                                                                .collection(
-                                                                    'userdata')
-                                                                .doc(email)
-                                                                .collection(
-                                                                    'history')
-                                                                .add({
-                                                              'amount': snapshot
-                                                                      .data!
-                                                                      .docs[0]
-                                                                  ['due'],
-                                                              'date': Timestamp
-                                                                  .now()
-                                                            });
-                                                          },
-                                                          child: Container(
-                                                            width:
-                                                                double.infinity,
-                                                            height: 50,
-                                                            decoration:
-                                                                BoxDecoration(
-                                                              color: const Color(
-                                                                  0xFFFF6900),
-                                                              borderRadius:
-                                                                  BorderRadius
-                                                                      .circular(
-                                                                          10),
-                                                            ),
-                                                            child: const Center(
-                                                              child: Text(
-                                                                'Pay with UPI',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: Colors
-                                                                      .white,
-                                                                  fontSize: 16,
-                                                                  fontFamily:
-                                                                      'Gotham',
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w300,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                  actions: [
-                                                    Center(
-                                                      child: TextButton(
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                        child: const Text(
-                                                            'Cancel'),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                );
-                                              },
-                                            );
-                                          },
-                                          child: Container(
-                                            width: double.infinity,
-                                            height: 50,
-                                            decoration: BoxDecoration(
-                                              color: const Color(0xFFFF6900),
-                                              borderRadius:
-                                                  BorderRadius.circular(10),
-                                            ),
-                                            child: const Center(
-                                              child: Text(
-                                                'Pay Now',
-                                                style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontFamily: 'Gotham',
-                                                  fontWeight: FontWeight.w300,
-                                                ),
-                                              ),
-                                            ),
+                                    //get device token from collection userdata doc email
+                                    FirebaseFirestore.instance
+                                        .collection('userdata')
+                                        .doc(email)
+                                        .get()
+                                        .then((DocumentSnapshot
+                                            documentSnapshot) {
+                                      String did = documentSnapshot['token2'];
+                                      //send notification to device token
+                                      sendNotification(
+                                        'AAAAWQ5e930:APA91bETjSgvHLzc-uP45fFIgN-0f7KuDnTW9ckft98Zgq5HVk3AKOUHtbIeCnmwWlxTrTULuJHIKWdEwvn4-YKYyCWLe0r1XiOD82JswnhwrfiIaCdUTSA22d1KVf6guAZblLQhhfG5',
+                                        [did],
+                                        'New Payment Received',
+                                        //due amount
+                                        '₹${snapshot.data!['due']}',
+                                      );
+                                    });
+                                    //add due amount and todays date as timestamp to subcollection history in firebase
+                                    FirebaseFirestore.instance
+                                        .collection('userdata')
+                                        .doc(email)
+                                        .collection('history')
+                                        .add({
+                                      'amount': snapshot.data!['due'],
+                                      'date': Timestamp.now()
+                                    });
+                                    //add due amount and todays date as timestamp to subcollection history of collection userdata and doc name as in lender field of doc email
+                                    FirebaseFirestore.instance
+                                        .collection('userdata')
+                                        .doc(email)
+                                        .get()
+                                        .then((DocumentSnapshot
+                                            documentSnapshot) {
+                                      String lender =
+                                          documentSnapshot['lender'];
+                                      FirebaseFirestore.instance
+                                          .collection('userdata')
+                                          .doc(lender)
+                                          .collection('history')
+                                          .add({
+                                        'amount': snapshot.data!['due'],
+                                        'date': Timestamp.now()
+                                      });
+                                    });
+                                  },
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(
+                                        left: 30, right: 30),
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: 50,
+                                      decoration: ShapeDecoration(
+                                        shape: RoundedRectangleBorder(
+                                          side: const BorderSide(
+                                              width: 2,
+                                              color: Color(0xFFFFDABF)),
+                                          borderRadius:
+                                              BorderRadius.circular(10),
+                                        ),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          'Pay Due',
+                                          style: TextStyle(
+                                            color: Color(0xFFFF6900),
+                                            fontSize: 16,
+                                            fontFamily: 'Gotham',
+                                            fontWeight: FontWeight.w700,
                                           ),
                                         ),
-                                      )
-                                    : const SizedBox(
-                                        height: 0,
                                       ),
-                                (snapshot.data!.docs[0].data()
-                                            as Map<String, dynamic>)
-                                        .containsKey('duedate')
-                                    ? const SizedBox(
-                                        height: 20,
-                                      )
-                                    : const SizedBox(
-                                        height: 0,
-                                      ),
-                              ],
-                            )
-                          : const Center(child: Text('No data')),
-                    ));
-              },
-            ),
+                                    ),
+                                  ),
+                                )
+                              : const SizedBox(
+                                  height: 0,
+                                );
+                        },
+                      ),
+
+                      const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                )),
+
             const SizedBox(
               height: 30,
             ),

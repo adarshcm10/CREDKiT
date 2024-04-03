@@ -258,7 +258,8 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                   .update({
                                 'due': due,
                                 'duedate': duedate,
-                                'end': enddate
+                                'end': enddate,
+                                'lender': widget.docid,
                               });
 
                               //get device token from collection userdata doc email
@@ -275,6 +276,14 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                   'Offer accepted',
                                   'Your offer has been accepted',
                                 );
+
+                                //save token to collection userdata and doc email as token2
+                                FirebaseFirestore.instance
+                                    .collection('userdata')
+                                    .doc(email)
+                                    .update({
+                                  'token2': did,
+                                });
                               });
 
                               //save due and duedate to collection userdata and doc widget.docid
@@ -284,7 +293,7 @@ class _AcceptOfferState extends State<AcceptOffer> {
                                   .update({
                                 'due': due,
                                 'duedate': duedate,
-                                'end': enddate
+                                'end': enddate,
                               });
 
                               //delete document from collection offers
