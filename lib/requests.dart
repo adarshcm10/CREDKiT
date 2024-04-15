@@ -120,8 +120,9 @@ class _MyRequestsState extends State<MyRequests> {
                                     locale: 'en_IN',
                                     symbol: '₹',
                                     decimalDigits: 0,
-                                  ).format(int.parse(
-                                      snapshot.data!.docs[0]['amount'])),
+                                  ).format(double.parse(snapshot
+                                      .data!.docs[0]['amount']
+                                      .toString())),
                                   textAlign: TextAlign.center,
                                   style: const TextStyle(
                                     color: Color(0xFFFF6900),
@@ -155,11 +156,11 @@ class _MyRequestsState extends State<MyRequests> {
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: GestureDetector(
                 onTap: () async {
+                  Navigator.pop(context);
                   await FirebaseFirestore.instance
                       .collection('requests')
                       .doc(email)
                       .delete();
-                  Navigator.pop(context);
                 },
                 child: Container(
                   width: double.infinity,
@@ -176,9 +177,9 @@ class _MyRequestsState extends State<MyRequests> {
                       textAlign: TextAlign.center,
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 20,
+                        fontSize: 16,
                         fontFamily: 'Gotham Black',
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w400,
                         height: 0,
                       ),
                     ),
