@@ -439,17 +439,14 @@ class _DuePageState extends State<DuePage> {
                                         });
                                       } else {
                                         //delete duedate
-                                        FirebaseFirestore.instance
-                                            .collection('userdata')
-                                            .doc(email)
-                                            .update({
-                                          'duedate': FieldValue.delete()
-                                        });
                                         //set due to 0
                                         FirebaseFirestore.instance
                                             .collection('userdata')
                                             .doc(email)
-                                            .update({'due': 0});
+                                            .update({
+                                          'due': 0,
+                                          'duedate': FieldValue.delete()
+                                        });
                                         //set due to 0 in doc with value in lender field of doc email
                                         FirebaseFirestore.instance
                                             .collection('userdata')
@@ -462,7 +459,10 @@ class _DuePageState extends State<DuePage> {
                                           FirebaseFirestore.instance
                                               .collection('userdata')
                                               .doc(lender)
-                                              .update({'due': 0});
+                                              .update({
+                                            'due': 0,
+                                            'duedate': FieldValue.delete()
+                                          });
                                         });
                                       }
                                     });
