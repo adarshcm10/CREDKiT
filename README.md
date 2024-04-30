@@ -4,7 +4,7 @@ Credkit is a revolutionary financial app for Android and iOS that cuts out the m
 
 ![](UI/1.jpg)
 ![](UI/2.jpg)
-![](UI/5.jpg)
+![](UI/3.jpg)
 ![](UI/4.jpg)
 
 ## Features
