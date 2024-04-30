@@ -1,16 +1,3 @@
-# credkit
+# CREDKiT
 
-A new Flutter project.
-
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Credkit is a revolutionary financial app for Android and iOS that cuts out the middleman. By leveraging blockchain technology, Credkit creates a secure peer-to-peer lending marketplace. Borrowers can directly connect with lenders, bypassing traditional banks and their fees.  Smart contracts, automated agreements on the blockchain, ensure secure transactions and repayment.  Users have the freedom to negotiate loan terms, including interest rates and durations, creating a more flexible and potentially more affordable borrowing experience. 
