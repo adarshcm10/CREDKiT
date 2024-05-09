@@ -171,28 +171,7 @@ class _SignInState extends State<SignIn> {
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 30, top: 5),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {},
-                        child: const Text(
-                          'forgot password?',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 14,
-                            fontFamily: 'Gotham',
-                            fontWeight: FontWeight.w300,
-                            height: 0.09,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+                
                 Padding(
                   padding: const EdgeInsets.only(top: 20, right: 30, left: 30),
                   child: GestureDetector(
